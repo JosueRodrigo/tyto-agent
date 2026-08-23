@@ -7,7 +7,7 @@ return [
 
     // Application Token and Server URL
     'token' => env('LARAOWL_TOKEN'),
-    'server_url' => env('LARAOWL_SERVER_URL', 'https://laraowl.test'),
+    'server_url' => env('LARAOWL_SERVER_URL', 'https://tyto.test'),
 
     // Metadata about the environment
     'environment' => [

@@ -181,16 +181,17 @@ final class LaraowlClientServiceProvider extends ServiceProvider
 
     private function captureExecutionType(): void
     {
-        $this->isRequest = ! $this->app->runningInConsole() || Env::get('LARAOWL_FORCE_REQUEST');
+        $this->isRequest = ! $this->app->runningInConsole() || Env::get('TYTO_FORCE_REQUEST') || Env::get('LARAOWL_FORCE_REQUEST');
     }
 
     private function registerAndCaptureConfig(): void
     {
         $this->mergeConfigFrom(__DIR__.'/../config/laraowl.php', 'laraowl');
+        $this->mergeConfigFrom(__DIR__.'/../config/tyto.php', 'tyto');
 
         $this->config = $this->app->make(Repository::class);
 
-        $this->laraowlConfig = $this->config->get('laraowl') ?? []; // @phpstan-ignore assign.propertyType
+        $this->laraowlConfig = $this->config->get('tyto') ?? []; // @phpstan-ignore assign.propertyType
     }
 
     private function registerBindings(): void
@@ -230,7 +231,7 @@ final class LaraowlClientServiceProvider extends ServiceProvider
 
         $this->app->instance(Core::class, $this->core = new Core(
             ingest: new HttpIngest(
-                endpoint: $this->laraowlConfig['server_url'] ?? 'https://laraowl.test',
+                endpoint: $this->laraowlConfig['server_url'] ?? 'https://tyto.test',
                 token: $this->laraowlConfig['token'] ?? '',
                 timeout: $this->laraowlConfig['ingest']['timeout'] ?? 2.0,
                 buffer: new RecordsBuffer(
@@ -282,6 +283,10 @@ final class LaraowlClientServiceProvider extends ServiceProvider
 
     private function registerPublications(): void
     {
+        $this->publishes([
+            __DIR__.'/../config/tyto.php' => $this->app->configPath('tyto.php'),
+        ], ['tyto', 'tyto-config']);
+
         $this->publishes([
             __DIR__.'/../config/laraowl.php' => $this->app->configPath('laraowl.php'),
         ], ['laraowl', 'laraowl-config']);

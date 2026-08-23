@@ -5,6 +5,7 @@ namespace Laraowl\Client;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use Laraowl\Client\Contracts\Ingest as IngestContract;
+use Ramsey\Uuid\Uuid;
 use Throwable;
 
 /**
@@ -77,9 +78,10 @@ final class HttpIngest implements IngestContract
         ]);
 
         try {
-            $client->post('/api/records', [
+            $client->post('/api/v1/ingest', [
                 'headers' => [
-                    'Authorization' => 'Bearer ' . $this->token,
+                    'X-Tyto-Token'  => $this->token,
+                    'Idempotency-Key' => Uuid::uuid4()->toString(),
                     'Accept'        => 'application/json',
                 ],
                 'json' => [
@@ -88,7 +90,7 @@ final class HttpIngest implements IngestContract
                 ],
             ]);
         } catch (GuzzleException | Throwable $e) {
-            \Illuminate\Support\Facades\Log::error('Laraowl Ingest Error: ' . $e->getMessage() . "\n" . $e->getTraceAsString());
+            \Illuminate\Support\Facades\Log::error('Tyto Ingest Error: ' . $e->getMessage() . "\n" . $e->getTraceAsString());
         }
     }
 }
