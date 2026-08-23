@@ -102,7 +102,7 @@ final class HttpIngest implements IngestContract
                 ]);
 
                 return;
-            } catch (GuzzleException | Throwable $e) {
+            } catch (GuzzleException|Throwable $e) {
                 if ($attempt < $attempts) {
                     usleep(max(0, $this->backoffMs) * $attempt * 1000);
 
