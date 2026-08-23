@@ -3,6 +3,7 @@
 namespace Laraowl\Client;
 
 use Illuminate\Contracts\Auth\Authenticatable;
+use InvalidArgumentException;
 use Laraowl\Client\Contracts\Ingest;
 use Laraowl\Client\Facades\LaraowlClient;
 use Laraowl\Client\Hooks\GuzzleMiddleware;
@@ -13,7 +14,9 @@ use Throwable;
 use WeakMap;
 
 use function preg_match;
+use function str_replace;
 use function trim;
+use function ucfirst;
 
 /**
  * @template TState of RequestState|CommandState
@@ -135,11 +138,11 @@ final class Core
         $slug = trim($slug);
 
         if (preg_match('/^[a-z0-9][a-z0-9._-]{0,99}$/', $slug) !== 1) {
-            throw new \InvalidArgumentException('Heartbeat slug must contain only lowercase letters, numbers, dots, dashes, or underscores.');
+            throw new InvalidArgumentException('Heartbeat slug must contain only lowercase letters, numbers, dots, dashes, or underscores.');
         }
 
         if ($interval < 1 || $interval > 10080) {
-            throw new \InvalidArgumentException('Heartbeat interval must be between 1 and 10080 minutes.');
+            throw new InvalidArgumentException('Heartbeat interval must be between 1 and 10080 minutes.');
         }
 
         $this->record('heartbeat', [
