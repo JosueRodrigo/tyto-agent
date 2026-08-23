@@ -12,6 +12,7 @@ final class FileSpool
         if ($records === []) {
             return;
         }
+
         $directory = dirname($this->path);
         if (! is_dir($directory)) {
             @mkdir($directory, 0750, true);
@@ -28,6 +29,7 @@ final class FileSpool
         if (! is_file($this->path)) {
             return [];
         }
+
         $handle = @fopen($this->path, 'c+');
         if ($handle === false || ! flock($handle, LOCK_EX)) {
             return [];
@@ -36,6 +38,7 @@ final class FileSpool
         ftruncate($handle, 0);
         flock($handle, LOCK_UN);
         fclose($handle);
+
         $batches = [];
         foreach (preg_split('/\R/', (string) $contents, flags: PREG_SPLIT_NO_EMPTY) ?: [] as $line) {
             $batch = json_decode($line, true);
@@ -43,6 +46,7 @@ final class FileSpool
                 $batches[] = $batch;
             }
         }
+
         return $batches;
     }
 }
