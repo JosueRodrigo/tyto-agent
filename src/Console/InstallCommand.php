@@ -7,65 +7,75 @@ use Illuminate\Support\Facades\File;
 
 class InstallCommand extends Command
 {
-    protected $signature = 'laraowl:install';
+    protected $signature = 'tyto:install';
 
-    protected $description = 'Install and configure the Laraowl client';
+    protected $aliases = ['laraowl:install'];
 
-    public function handle()
+    protected $description = 'Install and configure the Tyto Laravel agent';
+
+    public function handle(): int
     {
-        $this->info('Installing Laraowl Client...');
+        $this->info('Installing Tyto Agent...');
 
         $this->publishConfiguration();
 
         $this->askForConfiguration();
 
-        $this->info('Laraowl installed successfully.');
+        $this->info('Tyto Agent installed successfully.');
+
+        return self::SUCCESS;
     }
 
-    protected function publishConfiguration()
+    protected function publishConfiguration(): void
     {
         $this->call('vendor:publish', [
-            '--tag' => 'laraowl-config',
+            '--tag' => 'tyto-config',
             '--force' => true,
         ]);
     }
 
-    protected function askForConfiguration()
+    protected function askForConfiguration(): void
     {
-        if (!$this->confirm('Do you want to configure your credentials now?', true)) {
+        if (! $this->confirm('Do you want to configure your credentials now?', true)) {
             return;
         }
 
-        $url = $this->ask('Laraowl Server URL', 'https://laraowl.laraowl.com');
-        $token = $this->ask('Project Token');
+        $url = (string) $this->ask('Tyto Server URL', 'https://tyto.test');
+        $token = (string) $this->ask('Project Token');
+
+        if ($token === '') {
+            $this->error('A project token is required.');
+
+            return;
+        }
 
         $this->updateEnv($url, $token);
     }
 
-    protected function updateEnv($url, $token)
+    protected function updateEnv(string $url, string $token): void
     {
         $envPath = base_path('.env');
 
-        if (!File::exists($envPath)) {
+        if (! File::exists($envPath)) {
             return;
         }
 
         $content = File::get($envPath);
 
-        if (!str_contains($content, 'LARAOWL_SERVER_URL')) {
-            $content .= "\nLARAOWL_SERVER_URL={$url}";
+        if (! str_contains($content, 'TYTO_SERVER_URL')) {
+            $content .= "\nTYTO_SERVER_URL={$url}";
         } else {
-            $content = preg_replace('/LARAOWL_SERVER_URL=.*/', "LARAOWL_SERVER_URL={$url}", $content);
+            $content = preg_replace('/TYTO_SERVER_URL=.*/', "TYTO_SERVER_URL={$url}", $content);
         }
 
-        if (!str_contains($content, 'LARAOWL_TOKEN')) {
-            $content .= "\nLARAOWL_TOKEN={$token}";
+        if (! str_contains($content, 'TYTO_TOKEN')) {
+            $content .= "\nTYTO_TOKEN={$token}";
         } else {
-            $content = preg_replace('/LARAOWL_TOKEN=.*/', "LARAOWL_TOKEN={$token}", $content);
+            $content = preg_replace('/TYTO_TOKEN=.*/', "TYTO_TOKEN={$token}", $content);
         }
 
         File::put($envPath, $content);
-        
+
         $this->info('Environment variables updated.');
     }
 }
