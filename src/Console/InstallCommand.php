@@ -24,6 +24,7 @@ class InstallCommand extends Command
         $this->askForConfiguration();
 
         $this->info('Tyto Agent installed successfully.');
+        $this->displayLoggingInstructions();
 
         return self::SUCCESS;
     }
@@ -79,5 +80,19 @@ class InstallCommand extends Command
         File::put($envPath, $content);
 
         $this->info('Environment variables updated.');
+    }
+
+    protected function displayLoggingInstructions(): void
+    {
+        $this->newLine();
+        $this->components->info('Enable Tyto application logs');
+        $this->line('The agent registers the <comment>tyto</comment> logging channel automatically.');
+        $this->line('Add it to Laravel\'s active stack in your <comment>.env</comment>:');
+        $this->newLine();
+        $this->line('  <comment>LOG_CHANNEL=stack</comment>');
+        $this->line('  <comment>LOG_STACK=single,tyto</comment>');
+        $this->newLine();
+        $this->line('If config/logging.php uses a fixed stack, add <comment>\'tyto\'</comment> to its channels array.');
+        $this->line('Then run <comment>php artisan optimize:clear</comment> before testing a log entry.');
     }
 }
