@@ -30,7 +30,7 @@ final class HttpIngest implements IngestContract
         private ?ClientInterface $client = null,
         private ?FileSpool $spool = null,
     ) {
-        if ($this->spool === null && function_exists('storage_path')) {
+        if ($this->spool === null && function_exists('app') && method_exists(app(), 'storagePath')) {
             $this->spool = new FileSpool(storage_path('framework/tyto/spool.jsonl'));
         }
     }
@@ -130,7 +130,7 @@ final class HttpIngest implements IngestContract
                     continue;
                 }
 
-                \Illuminate\Support\Facades\Log::error('Tyto Ingest Error: '.$e->getMessage()."\n".$e->getTraceAsString());
+                error_log('Tyto Ingest Error: '.$e->getMessage());
             }
         }
 
