@@ -77,6 +77,9 @@ final class HttpIngest implements IngestContract
         $this->transmit($records);
     }
 
+    /**
+     * @param  list<array<mixed>>  $records
+     */
     private function transmit(array $records): void
     {
         $client = $this->client ?? new Client([
@@ -89,7 +92,7 @@ final class HttpIngest implements IngestContract
 
         for ($attempt = 1; $attempt <= $attempts; $attempt++) {
             try {
-                $client->post('/api/v1/ingest', [
+                $client->request('POST', '/api/v1/ingest', [
                     'headers' => [
                         'X-Tyto-Token' => $this->token,
                         'Idempotency-Key' => $idempotencyKey,
