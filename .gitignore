@@ -8,3 +8,4 @@
 /tests/database.sqlite*
 /vendor
 .idea
+.tool-versions
