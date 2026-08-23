@@ -1,11 +1,11 @@
 <?php
 
-namespace Laraowl\Client\Sensors;
+namespace Tyto\Agent\Sensors;
 
-use Laraowl\Client\Records\OutgoingRequest;
-use Laraowl\Client\State\CommandState;
-use Laraowl\Client\State\RequestState;
-use Laraowl\Client\Types\Str;
+use Tyto\Agent\Records\OutgoingRequest;
+use Tyto\Agent\State\CommandState;
+use Tyto\Agent\State\RequestState;
+use Tyto\Agent\Types\Str;
 use Psr\Http\Message\MessageInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;

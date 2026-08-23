@@ -1,6 +1,6 @@
 <?php
 
-namespace Laraowl\Client\Concerns;
+namespace Tyto\Agent\Concerns;
 
 use function preg_quote;
 use function preg_replace;

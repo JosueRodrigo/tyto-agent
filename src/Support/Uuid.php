@@ -1,6 +1,6 @@
 <?php
 
-namespace Laraowl\Client\Support;
+namespace Tyto\Agent\Support;
 
 use function call_user_func;
 

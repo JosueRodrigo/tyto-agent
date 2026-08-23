@@ -1,11 +1,11 @@
 <?php
 
-namespace Laraowl\Client;
+namespace Tyto\Agent;
 
 use Illuminate\Auth\AuthManager;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Model;
-use Laraowl\Client\Types\Str;
+use Tyto\Agent\Types\Str;
 use Throwable;
 
 use function call_user_func;

@@ -1,11 +1,11 @@
 <?php
 
-namespace Laraowl\Client\Sensors;
+namespace Tyto\Agent\Sensors;
 
 use Illuminate\Support\Facades\File;
-use Laraowl\Client\Core;
-use Laraowl\Client\State\CommandState;
-use Laraowl\Client\State\RequestState;
+use Tyto\Agent\Core;
+use Tyto\Agent\State\CommandState;
+use Tyto\Agent\State\RequestState;
 
 use function app;
 use function base_path;

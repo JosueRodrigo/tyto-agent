@@ -1,6 +1,6 @@
 <?php
 
-namespace Laraowl\Client\Records;
+namespace Tyto\Agent\Records;
 
 use Symfony\Component\HttpFoundation\FileBag;
 use Symfony\Component\HttpFoundation\HeaderBag;

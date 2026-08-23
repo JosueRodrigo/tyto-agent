@@ -1,8 +1,8 @@
 <?php
 
-namespace Laraowl\Client\Records;
+namespace Tyto\Agent\Records;
 
-use Laraowl\Client\QueryConnectionType;
+use Tyto\Agent\QueryConnectionType;
 
 final class Query
 {

@@ -1,14 +1,14 @@
 <?php
 
-namespace Laraowl\Client\State;
+namespace Tyto\Agent\State;
 
 use Closure;
 use Illuminate\Console\Application as Artisan;
 use Illuminate\Foundation\Application;
-use Laraowl\Client\ExecutionStage;
-use Laraowl\Client\LazyValue;
-use Laraowl\Client\Types\Str;
-use Laraowl\Client\UserProvider;
+use Tyto\Agent\ExecutionStage;
+use Tyto\Agent\LazyValue;
+use Tyto\Agent\Types\Str;
+use Tyto\Agent\UserProvider;
 
 use function call_user_func;
 use function memory_get_peak_usage;

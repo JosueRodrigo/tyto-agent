@@ -1,6 +1,6 @@
 <?php
 
-namespace Laraowl\Client;
+namespace Tyto\Agent;
 
 use Illuminate\Contracts\Debug\ExceptionHandler;
 use Symfony\Component\Console\Output\ConsoleOutputInterface;
@@ -8,7 +8,9 @@ use Symfony\Component\Console\Output\StreamOutput;
 use Throwable;
 
 use function date;
-use function LaraowlClient\fwrite_all;
+use function fwrite;
+use function strlen;
+use function substr;
 
 /**
  * @internal
@@ -63,7 +65,7 @@ final class GracefulCliOutputExceptionHandler implements ExceptionHandler
             : $output;
 
         $writeLine = $output instanceof StreamOutput
-            ? static fn (string $message) => fwrite_all($output->getStream(), $message.PHP_EOL)
+            ? static fn (string $message) => self::writeAll($output->getStream(), $message.PHP_EOL)
             : static fn (string $message) => $output->write($message.PHP_EOL);
 
         if ($this->shuttingDown) {
@@ -79,10 +81,24 @@ final class GracefulCliOutputExceptionHandler implements ExceptionHandler
                         Stack trace:
                         {$e->getTraceAsString()}
                         MESSAGE
-            : 'To see a full stack trace, pass the `-v` flag when calling the the agent command, e.g., `php artisan laraowl:agent -v`');
+            : 'To see a full stack trace, pass the `-v` flag when calling the the agent command, e.g., `php artisan tyto:agent -v`');
 
         if ($this->shuttingDown) {
-            $writeLine('This should not impact the operation of LaraowlClient.');
+            $writeLine('This should not impact the operation of TytoAgent.');
+        }
+    }
+
+    /** @param resource $stream */
+    private static function writeAll($stream, string $message): void
+    {
+        while ($message !== '') {
+            $written = fwrite($stream, $message);
+
+            if ($written === false || $written === 0) {
+                return;
+            }
+
+            $message = substr($message, $written, strlen($message));
         }
     }
 

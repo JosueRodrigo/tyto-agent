@@ -1,6 +1,6 @@
 <?php
 
-namespace Laraowl\Client\Records;
+namespace Tyto\Agent\Records;
 
 final class CacheEvent
 {

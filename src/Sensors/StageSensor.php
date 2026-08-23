@@ -1,11 +1,11 @@
 <?php
 
-namespace Laraowl\Client\Sensors;
+namespace Tyto\Agent\Sensors;
 
-use Laraowl\Client\Clock;
-use Laraowl\Client\ExecutionStage;
-use Laraowl\Client\State\CommandState;
-use Laraowl\Client\State\RequestState;
+use Tyto\Agent\Clock;
+use Tyto\Agent\ExecutionStage;
+use Tyto\Agent\State\CommandState;
+use Tyto\Agent\State\RequestState;
 
 use function round;
 

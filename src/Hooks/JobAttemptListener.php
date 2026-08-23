@@ -1,12 +1,12 @@
 <?php
 
-namespace Laraowl\Client\Hooks;
+namespace Tyto\Agent\Hooks;
 
 use Illuminate\Queue\Events\JobFailed;
 use Illuminate\Queue\Events\JobProcessed;
 use Illuminate\Queue\Events\JobReleasedAfterException;
-use Laraowl\Client\Core;
-use Laraowl\Client\State\CommandState;
+use Tyto\Agent\Core;
+use Tyto\Agent\State\CommandState;
 use Throwable;
 
 /**
@@ -15,10 +15,10 @@ use Throwable;
 final class JobAttemptListener
 {
     /**
-     * @param  Core<CommandState>  $laraowl
+     * @param  Core<CommandState>  $tyto
      */
     public function __construct(
-        private Core $laraowl,
+        private Core $tyto,
     ) {
         //
     }
@@ -26,9 +26,9 @@ final class JobAttemptListener
     public function __invoke(JobProcessed|JobReleasedAfterException|JobFailed $event): void
     {
         try {
-            $this->laraowl->jobAttempt($event);
+            $this->tyto->jobAttempt($event);
         } catch (Throwable $e) {
-            $this->laraowl->report($e, handled: true);
+            $this->tyto->report($e, handled: true);
         }
     }
 }

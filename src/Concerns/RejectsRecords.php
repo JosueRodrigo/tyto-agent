@@ -1,13 +1,13 @@
 <?php
 
-namespace Laraowl\Client\Concerns;
+namespace Tyto\Agent\Concerns;
 
-use Laraowl\Client\Records\CacheEvent;
-use Laraowl\Client\Records\Mail;
-use Laraowl\Client\Records\Notification;
-use Laraowl\Client\Records\OutgoingRequest;
-use Laraowl\Client\Records\Query;
-use Laraowl\Client\Records\QueuedJob;
+use Tyto\Agent\Records\CacheEvent;
+use Tyto\Agent\Records\Mail;
+use Tyto\Agent\Records\Notification;
+use Tyto\Agent\Records\OutgoingRequest;
+use Tyto\Agent\Records\Query;
+use Tyto\Agent\Records\QueuedJob;
 
 /**
  * @internal

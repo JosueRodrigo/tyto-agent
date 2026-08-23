@@ -1,10 +1,10 @@
 <?php
 
-namespace Laraowl\Client\Hooks;
+namespace Tyto\Agent\Hooks;
 
 use Illuminate\Console\Events\ScheduledTaskStarting;
-use Laraowl\Client\Core;
-use Laraowl\Client\State\CommandState;
+use Tyto\Agent\Core;
+use Tyto\Agent\State\CommandState;
 use Throwable;
 
 /**
@@ -13,10 +13,10 @@ use Throwable;
 final class ScheduledTaskStartingListener
 {
     /**
-     * @param  Core<CommandState>  $laraowl
+     * @param  Core<CommandState>  $tyto
      */
     public function __construct(
-        private Core $laraowl,
+        private Core $tyto,
     ) {
         //
     }
@@ -24,9 +24,9 @@ final class ScheduledTaskStartingListener
     public function __invoke(ScheduledTaskStarting $event): void
     {
         try {
-            $this->laraowl->prepareForScheduledTask($event->task);
+            $this->tyto->prepareForScheduledTask($event->task);
         } catch (Throwable $e) {
-            $this->laraowl->report($e, handled: true);
+            $this->tyto->report($e, handled: true);
         }
     }
 }

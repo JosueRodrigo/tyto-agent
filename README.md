@@ -74,18 +74,6 @@ Or from cron and deployment scripts:
 php artisan tyto:heartbeat nightly-import --name="Nightly customer import" --interval=1440
 ```
 
-## Migration from LaraOwl
-
-Existing installations remain compatible during the transition:
-
-- `LARAOWL_*` environment values are used when the equivalent `TYTO_*` value is absent.
-- `config/laraowl.php` remains readable.
-- `php artisan laraowl:install` remains an alias.
-- the existing `Laraowl\\Client` PHP namespace and `LaraowlClient` facade remain available.
-- `laraowl/client` is declared as replaced by `tyto/agent`.
-
-New applications should use the Tyto names exclusively.
-
 ## Privacy defaults
 
 Request payload capture is disabled by default. Authentication headers, cookies, CSRF tokens and common password fields are redacted before transmission. Review `config/tyto.php` before enabling additional payload collection.

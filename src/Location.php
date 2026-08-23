@@ -1,6 +1,6 @@
 <?php
 
-namespace Laraowl\Client;
+namespace Tyto\Agent;
 
 use Illuminate\View\ViewException;
 use Spatie\LaravelIgnition\Exceptions\ViewException as IgnitionViewException;
@@ -27,7 +27,7 @@ final class Location
 
     private string $vendorPath;
 
-    private string $laraowlPath;
+    private string $tytoPath;
 
     private string $frameworkPath;
 
@@ -38,7 +38,7 @@ final class Location
         $this->basePath = $basePath.DIRECTORY_SEPARATOR;
         $this->artisanPath = $this->joinPaths($basePath, 'artisan');
         $this->vendorPath = $this->joinPaths($basePath, 'vendor');
-        $this->laraowlPath = $this->joinPaths($this->vendorPath, 'laravel', 'laraowl');
+        $this->tytoPath = $this->joinPaths($this->vendorPath, 'laravel', 'tyto');
         $this->frameworkPath = $this->joinPaths($this->vendorPath, 'laravel', 'framework');
         $this->publicIndexPath = $this->joinPaths($publicPath, 'index.php');
     }
@@ -188,7 +188,7 @@ final class Location
     private function isInternalFile(string $file): bool
     {
         return str_starts_with($file, $this->frameworkPath) ||
-            str_starts_with($file, $this->laraowlPath) ||
+            str_starts_with($file, $this->tytoPath) ||
             $file === $this->artisanPath ||
             $file === $this->publicIndexPath;
     }
@@ -212,7 +212,7 @@ final class Location
         $this->basePath = $path.DIRECTORY_SEPARATOR;
         $this->artisanPath = $this->joinPaths($path, 'artisan');
         $this->vendorPath = $this->joinPaths($path, 'vendor');
-        $this->laraowlPath = $this->joinPaths($this->vendorPath, 'laravel', 'laraowl');
+        $this->tytoPath = $this->joinPaths($this->vendorPath, 'laravel', 'tyto');
         $this->frameworkPath = $this->joinPaths($this->vendorPath, 'laravel', 'framework');
 
         return $this;

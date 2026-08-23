@@ -1,10 +1,10 @@
 <?php
 
-namespace Laraowl\Client\Sensors;
+namespace Tyto\Agent\Sensors;
 
-use Laraowl\Client\State\CommandState;
-use Laraowl\Client\State\RequestState;
-use Laraowl\Client\Types\Str;
+use Tyto\Agent\State\CommandState;
+use Tyto\Agent\State\RequestState;
+use Tyto\Agent\Types\Str;
 use Monolog\LogRecord;
 
 use function json_encode;

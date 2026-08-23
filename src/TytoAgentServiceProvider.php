@@ -1,6 +1,6 @@
 <?php
 
-namespace Laraowl\Client;
+namespace Tyto\Agent;
 
 use Illuminate\Auth\AuthManager;
 use Illuminate\Auth\Events\Logout;
@@ -39,39 +39,39 @@ use Illuminate\Routing\Events\RouteMatched;
 use Illuminate\Support\Env;
 use Illuminate\Support\Facades\Context;
 use Illuminate\Support\ServiceProvider;
-use Laraowl\Client\Facades\LaraowlClient;
-use Laraowl\Client\Factories\Logger;
-use Laraowl\Client\Hooks\ArtisanStartingListener;
-use Laraowl\Client\Hooks\CacheEventListener;
-use Laraowl\Client\Hooks\CommandBootedHandler;
-use Laraowl\Client\Hooks\CommandStartingListener;
-use Laraowl\Client\Hooks\ContextDehydratingHandler;
-use Laraowl\Client\Hooks\CreateQueuePayloadHandler;
-use Laraowl\Client\Hooks\ExceptionHandlerResolvedHandler;
-use Laraowl\Client\Hooks\GlobalMiddleware;
-use Laraowl\Client\Hooks\HttpClientFactoryResolvedHandler;
-use Laraowl\Client\Hooks\HttpKernelResolvedHandler;
-use Laraowl\Client\Hooks\LivewireListener;
-use Laraowl\Client\Hooks\LogoutListener;
-use Laraowl\Client\Hooks\MailListener;
-use Laraowl\Client\Hooks\NotificationListener;
-use Laraowl\Client\Hooks\OctaneListener;
-use Laraowl\Client\Hooks\PolyfillContextDehydration;
-use Laraowl\Client\Hooks\PolyfillContextHydration;
-use Laraowl\Client\Hooks\PreparingResponseListener;
-use Laraowl\Client\Hooks\QueryExecutedListener;
-use Laraowl\Client\Hooks\QueuedJobListener;
-use Laraowl\Client\Hooks\RequestBootedHandler;
-use Laraowl\Client\Hooks\RequestHandledListener;
-use Laraowl\Client\Hooks\ResponsePreparedListener;
-use Laraowl\Client\Hooks\RouteMatchedListener;
-use Laraowl\Client\Hooks\RouteMiddleware;
-use Laraowl\Client\Hooks\TerminatingListener;
-use Laraowl\Client\Http\Middleware\Sample;
-use Laraowl\Client\Sensors\SecurityAuditSensor;
-use Laraowl\Client\State\CommandState;
-use Laraowl\Client\State\RequestState;
-use Laraowl\Client\Support\Uuid;
+use Tyto\Agent\Facades\TytoAgent;
+use Tyto\Agent\Factories\Logger;
+use Tyto\Agent\Hooks\ArtisanStartingListener;
+use Tyto\Agent\Hooks\CacheEventListener;
+use Tyto\Agent\Hooks\CommandBootedHandler;
+use Tyto\Agent\Hooks\CommandStartingListener;
+use Tyto\Agent\Hooks\ContextDehydratingHandler;
+use Tyto\Agent\Hooks\CreateQueuePayloadHandler;
+use Tyto\Agent\Hooks\ExceptionHandlerResolvedHandler;
+use Tyto\Agent\Hooks\GlobalMiddleware;
+use Tyto\Agent\Hooks\HttpClientFactoryResolvedHandler;
+use Tyto\Agent\Hooks\HttpKernelResolvedHandler;
+use Tyto\Agent\Hooks\LivewireListener;
+use Tyto\Agent\Hooks\LogoutListener;
+use Tyto\Agent\Hooks\MailListener;
+use Tyto\Agent\Hooks\NotificationListener;
+use Tyto\Agent\Hooks\OctaneListener;
+use Tyto\Agent\Hooks\PolyfillContextDehydration;
+use Tyto\Agent\Hooks\PolyfillContextHydration;
+use Tyto\Agent\Hooks\PreparingResponseListener;
+use Tyto\Agent\Hooks\QueryExecutedListener;
+use Tyto\Agent\Hooks\QueuedJobListener;
+use Tyto\Agent\Hooks\RequestBootedHandler;
+use Tyto\Agent\Hooks\RequestHandledListener;
+use Tyto\Agent\Hooks\ResponsePreparedListener;
+use Tyto\Agent\Hooks\RouteMatchedListener;
+use Tyto\Agent\Hooks\RouteMiddleware;
+use Tyto\Agent\Hooks\TerminatingListener;
+use Tyto\Agent\Http\Middleware\Sample;
+use Tyto\Agent\Sensors\SecurityAuditSensor;
+use Tyto\Agent\State\CommandState;
+use Tyto\Agent\State\RequestState;
+use Tyto\Agent\Support\Uuid;
 use Laravel\Octane\Events\RequestReceived;
 use Livewire\Livewire;
 use Livewire\LivewireManager;
@@ -90,7 +90,7 @@ use function min;
 /**
  * @internal
  */
-final class LaraowlClientServiceProvider extends ServiceProvider
+final class TytoAgentServiceProvider extends ServiceProvider
 {
     /**
      * @var Core<RequestState|CommandState>
@@ -132,7 +132,7 @@ final class LaraowlClientServiceProvider extends ServiceProvider
      *     ingest?: array{ timeout?: float|int, buffer_size?: int },
      *  }
      */
-    private array $laraowlConfig;
+    private array $tytoConfig;
 
     private ?Throwable $registerException = null;
 
@@ -170,7 +170,7 @@ final class LaraowlClientServiceProvider extends ServiceProvider
                 $this->registerSchedule();
             }
         } catch (Throwable $e) {
-            LaraowlClient::unrecoverableExceptionOccurred($e);
+            TytoAgent::unrecoverableExceptionOccurred($e);
         }
     }
 
@@ -184,17 +184,16 @@ final class LaraowlClientServiceProvider extends ServiceProvider
 
     private function captureExecutionType(): void
     {
-        $this->isRequest = ! $this->app->runningInConsole() || Env::get('TYTO_FORCE_REQUEST') || Env::get('LARAOWL_FORCE_REQUEST');
+        $this->isRequest = ! $this->app->runningInConsole() || Env::get('TYTO_FORCE_REQUEST');
     }
 
     private function registerAndCaptureConfig(): void
     {
-        $this->mergeConfigFrom(__DIR__.'/../config/laraowl.php', 'laraowl');
         $this->mergeConfigFrom(__DIR__.'/../config/tyto.php', 'tyto');
 
         $this->config = $this->app->make(Repository::class);
 
-        $this->laraowlConfig = $this->config->get('tyto') ?? []; // @phpstan-ignore assign.propertyType
+        $this->tytoConfig = $this->config->get('tyto') ?? []; // @phpstan-ignore assign.propertyType
     }
 
     private function registerBindings(): void
@@ -206,8 +205,8 @@ final class LaraowlClientServiceProvider extends ServiceProvider
 
     private function registerLogger(): void
     {
-        if (! $this->config->has('logging.channels.laraowl')) {
-            $this->config->set('logging.channels.laraowl', [
+        if (! $this->config->has('logging.channels.tyto')) {
+            $this->config->set('logging.channels.tyto', [
                 'driver' => 'custom',
                 'via' => Logger::class,
                 'level' => 'debug',
@@ -234,15 +233,15 @@ final class LaraowlClientServiceProvider extends ServiceProvider
 
         $this->app->instance(Core::class, $this->core = new Core(
             ingest: new HttpIngest(
-                endpoint: $this->laraowlConfig['server_url'] ?? 'https://tyto.test',
-                token: $this->laraowlConfig['token'] ?? '',
-                timeout: $this->laraowlConfig['ingest']['timeout'] ?? 2.0,
+                endpoint: $this->tytoConfig['server_url'] ?? 'https://tyto.test',
+                token: $this->tytoConfig['token'] ?? '',
+                timeout: $this->tytoConfig['ingest']['timeout'] ?? 2.0,
                 buffer: new RecordsBuffer(
-                    length: $this->laraowlConfig['ingest']['buffer_size'] ?? 500,
+                    length: $this->tytoConfig['ingest']['buffer_size'] ?? 500,
                 ),
                 app_url: $this->config->get('app.url'),
-                attempts: $this->laraowlConfig['ingest']['attempts'] ?? 3,
-                backoffMs: $this->laraowlConfig['ingest']['backoff_ms'] ?? 100,
+                attempts: $this->tytoConfig['ingest']['attempts'] ?? 3,
+                backoffMs: $this->tytoConfig['ingest']['backoff_ms'] ?? 100,
             ),
             sensor: new SensorManager(
                 executionState: $executionState,
@@ -251,29 +250,29 @@ final class LaraowlClientServiceProvider extends ServiceProvider
                     basePath: $this->app->basePath(),
                     publicPath: $this->app->publicPath(),
                 ),
-                captureExceptionSourceCode: (bool) ($this->laraowlConfig['privacy']['capture_source_code'] ?? true),
-                captureRequestPayload: (bool) ($this->laraowlConfig['privacy']['capture_payload'] ?? false),
-                redactPayloadFields: $this->laraowlConfig['privacy']['redact_fields'] ?? ['_token', 'password', 'password_confirmation'],
-                redactHeaders: $this->laraowlConfig['privacy']['redact_headers'] ?? ['Authorization', 'Cookie', 'Proxy-Authorization', 'X-XSRF-TOKEN'],
+                captureExceptionSourceCode: (bool) ($this->tytoConfig['privacy']['capture_source_code'] ?? true),
+                captureRequestPayload: (bool) ($this->tytoConfig['privacy']['capture_payload'] ?? false),
+                redactPayloadFields: $this->tytoConfig['privacy']['redact_fields'] ?? ['_token', 'password', 'password_confirmation'],
+                redactHeaders: $this->tytoConfig['privacy']['redact_headers'] ?? ['Authorization', 'Cookie', 'Proxy-Authorization', 'X-XSRF-TOKEN'],
                 config: $this->config,
             ),
             executionState: $executionState,
             clock: $clock,
             uuid: $uuid,
             config: [
-                'enabled' => $this->laraowlConfig['enabled'] ?? true,
+                'enabled' => $this->tytoConfig['enabled'] ?? true,
                 'sampling' => [
-                    'requests' => $this->laraowlConfig['sampling']['requests'] ?? 1.0,
-                    'commands' => $this->laraowlConfig['sampling']['commands'] ?? 1.0,
-                    'exceptions' => $this->laraowlConfig['sampling']['exceptions'] ?? 1.0,
-                    'scheduled_tasks' => $this->laraowlConfig['sampling']['tasks'] ?? 1.0,
+                    'requests' => $this->tytoConfig['sampling']['requests'] ?? 1.0,
+                    'commands' => $this->tytoConfig['sampling']['commands'] ?? 1.0,
+                    'exceptions' => $this->tytoConfig['sampling']['exceptions'] ?? 1.0,
+                    'scheduled_tasks' => $this->tytoConfig['sampling']['tasks'] ?? 1.0,
                 ],
                 'filtering' => [
-                    'ignore_cache_events' => (bool) ($this->laraowlConfig['ignore']['cache'] ?? false),
-                    'ignore_mail' => (bool) ($this->laraowlConfig['ignore']['mail'] ?? false),
-                    'ignore_notifications' => (bool) ($this->laraowlConfig['ignore']['notifications'] ?? false),
-                    'ignore_outgoing_requests' => (bool) ($this->laraowlConfig['ignore']['outgoing_requests'] ?? false),
-                    'ignore_queries' => (bool) ($this->laraowlConfig['ignore']['queries'] ?? false),
+                    'ignore_cache_events' => (bool) ($this->tytoConfig['ignore']['cache'] ?? false),
+                    'ignore_mail' => (bool) ($this->tytoConfig['ignore']['mail'] ?? false),
+                    'ignore_notifications' => (bool) ($this->tytoConfig['ignore']['notifications'] ?? false),
+                    'ignore_outgoing_requests' => (bool) ($this->tytoConfig['ignore']['outgoing_requests'] ?? false),
+                    'ignore_queries' => (bool) ($this->tytoConfig['ignore']['queries'] ?? false),
                 ],
             ],
         ));
@@ -281,7 +280,7 @@ final class LaraowlClientServiceProvider extends ServiceProvider
 
     private function handleAndClearRegisterException(): void
     {
-        LaraowlClient::unrecoverableExceptionOccurred($this->registerException); // @phpstan-ignore argument.type
+        TytoAgent::unrecoverableExceptionOccurred($this->registerException); // @phpstan-ignore argument.type
 
         $this->registerException = null;
     }
@@ -291,10 +290,6 @@ final class LaraowlClientServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__.'/../config/tyto.php' => $this->app->configPath('tyto.php'),
         ], ['tyto', 'tyto-config']);
-
-        $this->publishes([
-            __DIR__.'/../config/laraowl.php' => $this->app->configPath('laraowl.php'),
-        ], ['laraowl', 'laraowl-config']);
     }
 
     private function registerCommands(): void
@@ -311,7 +306,7 @@ final class LaraowlClientServiceProvider extends ServiceProvider
             $schedule = $this->app->make(\Illuminate\Console\Scheduling\Schedule::class);
             $schedule->call(new SecurityAuditSensor($this->core))->hourly();
 
-            $heartbeat = $this->laraowlConfig['heartbeat'] ?? [];
+            $heartbeat = $this->tytoConfig['heartbeat'] ?? [];
 
             if ($heartbeat['enabled'] ?? true) {
                 $interval = max(1, min(59, (int) ($heartbeat['interval'] ?? 1)));
@@ -342,37 +337,37 @@ final class LaraowlClientServiceProvider extends ServiceProvider
         //
 
         /**
-         * @see \Laraowl\Client\Records\Query
+         * @see \Tyto\Agent\Records\Query
          */
         $events->listen(QueryExecuted::class, (new QueryExecutedListener($core))(...));
 
         /**
-         * @see \Laraowl\Client\Records\Exception
+         * @see \Tyto\Agent\Records\Exception
          */
         $this->callAfterResolving(ExceptionHandler::class, (new ExceptionHandlerResolvedHandler($core))(...));
 
         /**
-         * @see \Laraowl\Client\Records\QueuedJob
+         * @see \Tyto\Agent\Records\QueuedJob
          */
         $events->listen([JobQueueing::class, JobQueued::class], (new QueuedJobListener($core))(...));
 
         /**
-         * @see \Laraowl\Client\Records\Notification
+         * @see \Tyto\Agent\Records\Notification
          */
         $events->listen([NotificationSending::class, NotificationSent::class], (new NotificationListener($core))(...));
 
         /**
-         * @see \Laraowl\Client\Records\Mail
+         * @see \Tyto\Agent\Records\Mail
          */
         $events->listen([MessageSending::class, MessageSent::class], (new MailListener($core))(...));
 
         /**
-         * @see \Laraowl\Client\Records\OutgoingRequest
+         * @see \Tyto\Agent\Records\OutgoingRequest
          */
         $this->callAfterResolving(Http::class, (new HttpClientFactoryResolvedHandler($core))(...));
 
         /**
-         * @see \Laraowl\Client\Records\CacheEvent
+         * @see \Tyto\Agent\Records\CacheEvent
          */
         $events->listen([
             RetrievingKey::class,
@@ -416,7 +411,7 @@ final class LaraowlClientServiceProvider extends ServiceProvider
         /** @var Core<RequestState|CommandState> $core */
 
         /**
-         * @see \Laraowl\Client\ExecutionStage::Terminating
+         * @see \Tyto\Agent\ExecutionStage::Terminating
          */
         $events->listen(Terminating::class, (new TerminatingListener($core))(...));
     }
@@ -429,43 +424,43 @@ final class LaraowlClientServiceProvider extends ServiceProvider
         // TODO resolve the kernel inline rather than in the listener.
 
         /**
-         * @see \Laraowl\Client\State\RequestState::$user
+         * @see \Tyto\Agent\State\RequestState::$user
          *
          * TODO handle this on the queue
          */
         $events->listen(Logout::class, (new LogoutListener($core))(...));
 
         /**
-         * @see \Laraowl\Client\ExecutionStage::BeforeMiddleware
+         * @see \Tyto\Agent\ExecutionStage::BeforeMiddleware
          */
         $this->app->booted((new RequestBootedHandler($core))(...));
 
         /**
-         * @see \Laraowl\Client\ExecutionStage::Action
-         * @see \Laraowl\Client\ExecutionStage::Terminating
+         * @see \Tyto\Agent\ExecutionStage::Action
+         * @see \Tyto\Agent\ExecutionStage::Terminating
          */
         $events->listen(RouteMatched::class, (new RouteMatchedListener($core))(...));
 
         /**
-         * @see \Laraowl\Client\ExecutionStage::Render
+         * @see \Tyto\Agent\ExecutionStage::Render
          */
         $events->listen(PreparingResponse::class, (new PreparingResponseListener($core))(...));
 
         /**
-         * @see \Laraowl\Client\ExecutionStage::AfterMiddleware
+         * @see \Tyto\Agent\ExecutionStage::AfterMiddleware
          */
         $events->listen(ResponsePrepared::class, (new ResponsePreparedListener($core))(...));
 
         /**
-         * @see \Laraowl\Client\ExecutionStage::Sending
+         * @see \Tyto\Agent\ExecutionStage::Sending
          */
         $events->listen(RequestHandled::class, (new RequestHandledListener($core))(...));
 
         /**
-         * @see \Laraowl\Client\ExecutionStage::End
-         * @see \Laraowl\Client\Records\Request
-         * @see \Laraowl\Client\ExecutionStage::Terminating
-         * @see \Laraowl\Client\Core::finishExecution()
+         * @see \Tyto\Agent\ExecutionStage::End
+         * @see \Tyto\Agent\Records\Request
+         * @see \Tyto\Agent\ExecutionStage::Terminating
+         * @see \Tyto\Agent\Core::finishExecution()
          */
         $this->callAfterResolving(HttpKernelContract::class, (new HttpKernelResolvedHandler($core))(...));
 
@@ -481,34 +476,34 @@ final class LaraowlClientServiceProvider extends ServiceProvider
         $kernel = $this->app->make(ConsoleKernelContract::class);
 
         /**
-         * @see \Laraowl\Client\State\CommandState::$artisan
+         * @see \Tyto\Agent\State\CommandState::$artisan
          */
         $events->listen(ArtisanStarting::class, (new ArtisanStartingListener($core))(...));
 
         /**
-         * @see \Laraowl\Client\ExecutionStage::Action
+         * @see \Tyto\Agent\ExecutionStage::Action
          */
         $this->app->booted((new CommandBootedHandler($core))(...));
 
         /**
-         * @see \Laraowl\Client\State\CommandState::$name
+         * @see \Tyto\Agent\State\CommandState::$name
          *
          * Commands...
-         * @see \Laraowl\Client\ExecutionStage::Terminating
-         * @see \Laraowl\Client\ExecutionStage::End
-         * @see \Laraowl\Client\Records\Command
-         * @see \Laraowl\Client\Core::finishExecution()
+         * @see \Tyto\Agent\ExecutionStage::Terminating
+         * @see \Tyto\Agent\ExecutionStage::End
+         * @see \Tyto\Agent\Records\Command
+         * @see \Tyto\Agent\Core::finishExecution()
          *
          * Jobs...
-         * @see \Laraowl\Client\State\CommandState::$source
-         * @see \Laraowl\Client\State\CommandState::flush()
-         * @see \Laraowl\Client\State\CommandState::$timestamp
-         * @see \Laraowl\Client\State\CommandState::$id
-         * @see \Laraowl\Client\Records\JobAttempt
-         * @see \Laraowl\Client\Records\Exception
+         * @see \Tyto\Agent\State\CommandState::$source
+         * @see \Tyto\Agent\State\CommandState::flush()
+         * @see \Tyto\Agent\State\CommandState::$timestamp
+         * @see \Tyto\Agent\State\CommandState::$id
+         * @see \Tyto\Agent\Records\JobAttempt
+         * @see \Tyto\Agent\Records\Exception
          *
          * Scheduled tasks...
-         * @see \Laraowl\Client\Core::finishExecution()
+         * @see \Tyto\Agent\Core::finishExecution()
          */
         $events->listen(CommandStarting::class, (new CommandStartingListener($events, $core, $kernel))(...));
     }
@@ -547,8 +542,8 @@ final class LaraowlClientServiceProvider extends ServiceProvider
                 trace: $trace,
                 id: $trace,
                 currentExecutionStageStartedAtMicrotime: $this->timestamp,
-                deploy: $this->laraowlConfig['environment']['deploy_id'] ?? '',
-                server: $this->laraowlConfig['environment']['server_name'] ?? '',
+                deploy: $this->tytoConfig['environment']['deploy_id'] ?? '',
+                server: $this->tytoConfig['environment']['server_name'] ?? '',
                 user: $this->userProvider(),
             );
         } else {
@@ -565,8 +560,8 @@ final class LaraowlClientServiceProvider extends ServiceProvider
                 }),
                 id: $trace,
                 currentExecutionStageStartedAtMicrotime: $this->timestamp,
-                deploy: $this->laraowlConfig['environment']['deploy_id'] ?? '',
-                server: $this->laraowlConfig['environment']['server_name'] ?? '',
+                deploy: $this->tytoConfig['environment']['deploy_id'] ?? '',
+                server: $this->tytoConfig['environment']['server_name'] ?? '',
                 user: $this->userProvider(),
             );
         }

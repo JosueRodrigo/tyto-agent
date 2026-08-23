@@ -1,10 +1,10 @@
 <?php
 
-namespace Laraowl\Client\Console;
+namespace Tyto\Agent\Console;
 
 use Closure;
 use Illuminate\Console\Scheduling\Event;
-use Laraowl\Client\Core;
+use Tyto\Agent\Core;
 
 use function app;
 

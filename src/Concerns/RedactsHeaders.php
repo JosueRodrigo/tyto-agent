@@ -1,6 +1,6 @@
 <?php
 
-namespace Laraowl\Client\Concerns;
+namespace Tyto\Agent\Concerns;
 
 use RuntimeException;
 use Symfony\Component\HttpFoundation\HeaderBag;

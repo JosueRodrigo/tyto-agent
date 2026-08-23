@@ -1,11 +1,11 @@
 <?php
 
-namespace Laraowl\Client\Hooks;
+namespace Tyto\Agent\Hooks;
 
 use Illuminate\Foundation\Http\Events\RequestHandled;
-use Laraowl\Client\Core;
-use Laraowl\Client\ExecutionStage;
-use Laraowl\Client\State\RequestState;
+use Tyto\Agent\Core;
+use Tyto\Agent\ExecutionStage;
+use Tyto\Agent\State\RequestState;
 use Throwable;
 
 /**
@@ -14,10 +14,10 @@ use Throwable;
 final class RequestHandledListener
 {
     /**
-     * @param  Core<RequestState>  $laraowl
+     * @param  Core<RequestState>  $tyto
      */
     public function __construct(
-        private Core $laraowl,
+        private Core $tyto,
     ) {
         //
     }
@@ -25,9 +25,9 @@ final class RequestHandledListener
     public function __invoke(RequestHandled $event): void
     {
         try {
-            $this->laraowl->stage(ExecutionStage::Sending);
+            $this->tyto->stage(ExecutionStage::Sending);
         } catch (Throwable $e) {
-            $this->laraowl->report($e, handled: true);
+            $this->tyto->report($e, handled: true);
         }
     }
 }

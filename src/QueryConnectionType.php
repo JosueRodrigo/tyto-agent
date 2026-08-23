@@ -1,6 +1,6 @@
 <?php
 
-namespace Laraowl\Client;
+namespace Tyto\Agent;
 
 enum QueryConnectionType: string
 {

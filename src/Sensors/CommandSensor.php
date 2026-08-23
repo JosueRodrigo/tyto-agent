@@ -1,13 +1,13 @@
 <?php
 
-namespace Laraowl\Client\Sensors;
+namespace Tyto\Agent\Sensors;
 
-use Laraowl\Client\Compatibility;
-use Laraowl\Client\Concerns\RecordsContext;
-use Laraowl\Client\ExecutionStage;
-use Laraowl\Client\Records\Command;
-use Laraowl\Client\State\CommandState;
-use Laraowl\Client\Types\Str;
+use Tyto\Agent\Compatibility;
+use Tyto\Agent\Concerns\RecordsContext;
+use Tyto\Agent\ExecutionStage;
+use Tyto\Agent\Records\Command;
+use Tyto\Agent\State\CommandState;
+use Tyto\Agent\Types\Str;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Input\InputInterface;
 

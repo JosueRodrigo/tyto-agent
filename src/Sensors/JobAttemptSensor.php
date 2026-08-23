@@ -1,16 +1,16 @@
 <?php
 
-namespace Laraowl\Client\Sensors;
+namespace Tyto\Agent\Sensors;
 
 use Illuminate\Queue\Events\JobFailed;
 use Illuminate\Queue\Events\JobProcessed;
 use Illuminate\Queue\Events\JobReleasedAfterException;
-use Laraowl\Client\Clock;
-use Laraowl\Client\Concerns\NormalizesQueue;
-use Laraowl\Client\Concerns\RecordsContext;
-use Laraowl\Client\LazyValue;
-use Laraowl\Client\State\CommandState;
-use Laraowl\Client\Types\Str;
+use Tyto\Agent\Clock;
+use Tyto\Agent\Concerns\NormalizesQueue;
+use Tyto\Agent\Concerns\RecordsContext;
+use Tyto\Agent\LazyValue;
+use Tyto\Agent\State\CommandState;
+use Tyto\Agent\Types\Str;
 
 use function hash;
 use function round;
@@ -56,7 +56,7 @@ final class JobAttemptSensor
             'trace_id' => $this->commandState->trace,
             'user' => $this->commandState->user->id(),
             // --- //
-            'job_id' => $event->job->payload()['laraowl']['job_id'] ?? $event->job->uuid(),
+            'job_id' => $event->job->payload()['tyto']['job_id'] ?? $event->job->uuid(),
             'attempt_id' => $this->commandState->id(),
             'attempt' => $this->commandState->attempts,
             'name' => $name,

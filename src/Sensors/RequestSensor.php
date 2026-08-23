@@ -1,17 +1,17 @@
 <?php
 
-namespace Laraowl\Client\Sensors;
+namespace Tyto\Agent\Sensors;
 
 use Illuminate\Http\Request;
 use Illuminate\Routing\Route;
 use Illuminate\Support\Arr;
-use Laraowl\Client\Concerns\RecordsContext;
-use Laraowl\Client\Concerns\RedactsHeaders;
-use Laraowl\Client\ExecutionStage;
-use Laraowl\Client\Facades\LaraowlClient;
-use Laraowl\Client\Records\Request as RequestRecord;
-use Laraowl\Client\State\RequestState;
-use Laraowl\Client\Types\Str;
+use Tyto\Agent\Concerns\RecordsContext;
+use Tyto\Agent\Concerns\RedactsHeaders;
+use Tyto\Agent\ExecutionStage;
+use Tyto\Agent\Facades\TytoAgent;
+use Tyto\Agent\Records\Request as RequestRecord;
+use Tyto\Agent\State\RequestState;
+use Tyto\Agent\Types\Str;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Response;
@@ -153,9 +153,9 @@ final class RequestSensor
                     'context' => $this->serializedContext(),
                     'headers' => rescue(
                         fn () => Str::text(json_encode((object) $this->redactHeaders($record->headers, $this->redactHeaders)->all(), JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRESERVE_ZERO_FRACTION)),
-                        '{"_laraowl_error":"Failed to serialize headers"}',
+                        '{"_tyto_error":"Failed to serialize headers"}',
                         static function ($e) {
-                            LaraowlClient::unrecoverableExceptionOccurred($e);
+                            TytoAgent::unrecoverableExceptionOccurred($e);
 
                             return false;
                         },
@@ -188,7 +188,7 @@ final class RequestSensor
 
         // TODO We are unable to determine the size of the response. We will
         // set this to `0`. We should offer a way to tell us the size of the
-        // streamed response, e.g., echo LaraowlClient::streaming($content);
+        // streamed response, e.g., echo TytoAgent::streaming($content);
         return 0;
     }
 
@@ -203,21 +203,21 @@ final class RequestSensor
         }
 
         if (! $this->capturePayload) {
-            return '{"_laraowl_error":"NOT_ENABLED"}';
+            return '{"_tyto_error":"NOT_ENABLED"}';
         }
 
         if (! $this->isSupportedContentType($request) && $record->payload->count() === 0 && $record->files->count() === 0) {
-            return '{"_laraowl_error":"UNSUPPORTED_CONTENT_TYPE"}';
+            return '{"_tyto_error":"UNSUPPORTED_CONTENT_TYPE"}';
         }
 
         return Str::text(rescue(
             fn () => json_encode([
                 ...$this->redactRecursively($record->payload->all()),
-                '_laraowl_files' => $this->mapUploadedFilesRecursively($record->files->all()),
+                '_tyto_files' => $this->mapUploadedFilesRecursively($record->files->all()),
             ], JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRESERVE_ZERO_FRACTION),
-            '{"_laraowl_error":"SERIALIZATION_FAILED"}',
+            '{"_tyto_error":"SERIALIZATION_FAILED"}',
             static function ($e) {
-                LaraowlClient::unrecoverableExceptionOccurred($e);
+                TytoAgent::unrecoverableExceptionOccurred($e);
 
                 return false;
             }

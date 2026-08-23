@@ -1,10 +1,10 @@
 <?php
 
-namespace Laraowl\Client\Hooks;
+namespace Tyto\Agent\Hooks;
 
 use Illuminate\Console\Events\CommandFinished;
-use Laraowl\Client\Core;
-use Laraowl\Client\State\CommandState;
+use Tyto\Agent\Core;
+use Tyto\Agent\State\CommandState;
 
 /**
  * @internal
@@ -12,16 +12,16 @@ use Laraowl\Client\State\CommandState;
 final class VaporWorkCommandFinishedListener
 {
     /**
-     * @param  Core<CommandState>  $laraowl
+     * @param  Core<CommandState>  $tyto
      */
     public function __construct(
-        private Core $laraowl,
+        private Core $tyto,
     ) {
         //
     }
 
     public function __invoke(CommandFinished $event): void
     {
-        $this->laraowl->finishExecution();
+        $this->tyto->finishExecution();
     }
 }

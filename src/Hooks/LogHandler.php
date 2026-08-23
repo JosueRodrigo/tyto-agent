@@ -1,11 +1,11 @@
 <?php
 
-namespace Laraowl\Client\Hooks;
+namespace Tyto\Agent\Hooks;
 
 use DateTimeZone;
-use Laraowl\Client\Core;
-use Laraowl\Client\State\CommandState;
-use Laraowl\Client\State\RequestState;
+use Tyto\Agent\Core;
+use Tyto\Agent\State\CommandState;
+use Tyto\Agent\State\RequestState;
 use Monolog\Handler\HandlerInterface;
 use Monolog\Level;
 use Monolog\LogRecord;
@@ -18,11 +18,11 @@ use Throwable;
 final class LogHandler implements HandlerInterface
 {
     /**
-     * @param  Core<RequestState|CommandState>  $laraowl
+     * @param  Core<RequestState|CommandState>  $tyto
      * @param  array<ProcessorInterface>  $processors
      */
     public function __construct(
-        private Core $laraowl,
+        private Core $tyto,
         private Level $level,
         private array $processors,
     ) {
@@ -31,7 +31,7 @@ final class LogHandler implements HandlerInterface
 
     public function isHandling(LogRecord $record): bool
     {
-        return $this->laraowl->shouldCaptureLogs() && $this->level->includes($record->level);
+        return $this->tyto->shouldCaptureLogs() && $this->level->includes($record->level);
     }
 
     public function handle(LogRecord $record): bool
@@ -56,11 +56,11 @@ final class LogHandler implements HandlerInterface
                 $record = $processor($record);
             }
 
-            $this->laraowl->log($record);
+            $this->tyto->log($record);
 
             return false;
         } catch (Throwable $e) {
-            $this->laraowl->report($e, handled: true);
+            $this->tyto->report($e, handled: true);
 
             return false;
         }
@@ -76,7 +76,7 @@ final class LogHandler implements HandlerInterface
                 $this->handle($record);
             }
         } catch (Throwable $e) {
-            $this->laraowl->report($e, handled: true);
+            $this->tyto->report($e, handled: true);
         }
     }
 

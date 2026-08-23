@@ -1,10 +1,10 @@
 <?php
 
-namespace Laraowl\Client\Hooks;
+namespace Tyto\Agent\Hooks;
 
 use Illuminate\Routing\Events\RouteMatched;
-use Laraowl\Client\Core;
-use Laraowl\Client\State\RequestState;
+use Tyto\Agent\Core;
+use Tyto\Agent\State\RequestState;
 use Throwable;
 
 /**
@@ -13,10 +13,10 @@ use Throwable;
 final class RouteMatchedListener
 {
     /**
-     * @param  Core<RequestState>  $laraowl
+     * @param  Core<RequestState>  $tyto
      */
     public function __construct(
-        private Core $laraowl,
+        private Core $tyto,
     ) {
         //
     }
@@ -24,9 +24,9 @@ final class RouteMatchedListener
     public function __invoke(RouteMatched $event): void
     {
         try {
-            $this->laraowl->attachMiddlewareToRoute($event->route);
+            $this->tyto->attachMiddlewareToRoute($event->route);
         } catch (Throwable $e) {
-            $this->laraowl->report($e, handled: true);
+            $this->tyto->report($e, handled: true);
         }
     }
 }

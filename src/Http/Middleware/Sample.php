@@ -1,20 +1,20 @@
 <?php
 
-namespace Laraowl\Client\Http\Middleware;
+namespace Tyto\Agent\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Laraowl\Client\Core;
-use Laraowl\Client\Facades\LaraowlClient;
-use Laraowl\Client\State\RequestState;
+use Tyto\Agent\Core;
+use Tyto\Agent\Facades\TytoAgent;
+use Tyto\Agent\State\RequestState;
 use Throwable;
 
 final class Sample
 {
     /**
-     * @param  Core<RequestState>  $laraowl
+     * @param  Core<RequestState>  $tyto
      */
-    public function __construct(private Core $laraowl)
+    public function __construct(private Core $tyto)
     {
         //
     }
@@ -43,9 +43,9 @@ final class Sample
     public function handle(Request $request, Closure $next, float $rate): mixed
     {
         try {
-            $this->laraowl->sample($rate);
+            $this->tyto->sample($rate);
         } catch (Throwable $e) {
-            LaraowlClient::unrecoverableExceptionOccurred($e);
+            TytoAgent::unrecoverableExceptionOccurred($e);
         }
 
         return $next($request);

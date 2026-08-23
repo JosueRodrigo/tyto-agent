@@ -1,14 +1,14 @@
 <?php
 
-namespace Laraowl\Client\Sensors;
+namespace Tyto\Agent\Sensors;
 
 use Illuminate\Mail\Events\MessageSending;
 use Illuminate\Mail\Events\MessageSent;
-use Laraowl\Client\Clock;
-use Laraowl\Client\Records\Mail;
-use Laraowl\Client\State\CommandState;
-use Laraowl\Client\State\RequestState;
-use Laraowl\Client\Types\Str;
+use Tyto\Agent\Clock;
+use Tyto\Agent\Records\Mail;
+use Tyto\Agent\State\CommandState;
+use Tyto\Agent\State\RequestState;
+use Tyto\Agent\Types\Str;
 use RuntimeException;
 
 use function count;

@@ -1,12 +1,12 @@
 <?php
 
-namespace Laraowl\Client\Hooks;
+namespace Tyto\Agent\Hooks;
 
 use Illuminate\Queue\Events\JobProcessing;
-use Laraowl\Client\Compatibility;
-use Laraowl\Client\Core;
-use Laraowl\Client\State\CommandState;
-use Laraowl\Client\State\RequestState;
+use Tyto\Agent\Compatibility;
+use Tyto\Agent\Core;
+use Tyto\Agent\State\CommandState;
+use Tyto\Agent\State\RequestState;
 use Throwable;
 
 /**
@@ -15,10 +15,10 @@ use Throwable;
 final class PolyfillContextHydration
 {
     /**
-     * @param  Core<RequestState|CommandState>  $laraowl
+     * @param  Core<RequestState|CommandState>  $tyto
      */
     public function __construct(
-        private Core $laraowl,
+        private Core $tyto,
     ) {
         //
     }
@@ -26,15 +26,15 @@ final class PolyfillContextHydration
     public function __invoke(JobProcessing $event): void
     {
         try {
-            $laraowl = $event->job->payload()['laraowl'] ?? [];
+            $tyto = $event->job->payload()['tyto'] ?? [];
 
             Compatibility::$context = [
-                'laraowl_trace_id' => $laraowl['laraowl_trace_id'] ?? null,
-                'laraowl_should_sample' => $laraowl['laraowl_should_sample'] ?? null,
-                'laraowl_user_id' => $laraowl['laraowl_user_id'] ?? '',
+                'tyto_trace_id' => $tyto['tyto_trace_id'] ?? null,
+                'tyto_should_sample' => $tyto['tyto_should_sample'] ?? null,
+                'tyto_user_id' => $tyto['tyto_user_id'] ?? '',
             ];
         } catch (Throwable $e) {
-            $this->laraowl->report($e);
+            $this->tyto->report($e);
 
             Compatibility::$context = [];
         }

@@ -1,6 +1,6 @@
 <?php
 
-namespace Laraowl\Client;
+namespace Tyto\Agent;
 
 use Illuminate\Console\Scheduling\Event;
 use Illuminate\Contracts\Foundation\Application;
@@ -43,9 +43,9 @@ final class Compatibility
 
     /**
      * @var array{
-     *   laraowl_should_sample?: bool|null,
-     *   laraowl_trace_id?: string|null,
-     *   laraowl_user_id?: string,
+     *   tyto_should_sample?: bool|null,
+     *   tyto_trace_id?: string|null,
+     *   tyto_user_id?: string,
      * }
      */
     public static array $context = [];
@@ -139,12 +139,12 @@ final class Compatibility
 
     public static function addSamplingToContext(bool $sample): void
     {
-        self::addHiddenContext('laraowl_should_sample', $sample);
+        self::addHiddenContext('tyto_should_sample', $sample);
     }
 
     public static function removeSamplingFromContext(): void
     {
-        self::addHiddenContext('laraowl_should_sample', null);
+        self::addHiddenContext('tyto_should_sample', null);
     }
 
     /**
@@ -155,7 +155,7 @@ final class Compatibility
      */
     public static function getSamplingFromContext(?bool $default = true)
     {
-        $context = self::getHiddenContext('laraowl_should_sample', $default);
+        $context = self::getHiddenContext('tyto_should_sample', $default);
 
         if ($context === null) {
             return null;
@@ -166,29 +166,29 @@ final class Compatibility
 
     public static function addTraceIdToContext(string $trace): void
     {
-        self::addHiddenContext('laraowl_trace_id', $trace);
+        self::addHiddenContext('tyto_trace_id', $trace);
     }
 
     public static function getTraceIdFromContext(mixed $default = null): mixed
     {
-        return self::getHiddenContext('laraowl_trace_id', $default);
+        return self::getHiddenContext('tyto_trace_id', $default);
     }
 
     public static function addUserIdToContext(string $id): void
     {
-        self::addHiddenContext('laraowl_user_id', $id);
+        self::addHiddenContext('tyto_user_id', $id);
     }
 
     public static function getUserIdFromContext(): string
     {
-        return (string) self::getHiddenContext('laraowl_user_id'); // @phpstan-ignore cast.string
+        return (string) self::getHiddenContext('tyto_user_id'); // @phpstan-ignore cast.string
     }
 
     /**
      * @see https://github.com/laravel/framework/pull/49730
      * @see https://github.com/laravel/framework/releases/tag/v11.0.0
      *
-     * @param  'laraowl_trace_id'|'laraowl_should_sample'|'laraowl_user_id'  $key
+     * @param  'tyto_trace_id'|'tyto_should_sample'|'tyto_user_id'  $key
      */
     private static function addHiddenContext(string $key, mixed $value): void
     {
@@ -205,7 +205,7 @@ final class Compatibility
      * @see https://github.com/laravel/framework/pull/49730
      * @see https://github.com/laravel/framework/releases/tag/v11.0.0
      *
-     * @param  'laraowl_trace_id'|'laraowl_should_sample'|'laraowl_user_id'  $key
+     * @param  'tyto_trace_id'|'tyto_should_sample'|'tyto_user_id'  $key
      */
     private static function getHiddenContext(string $key, mixed $default = null): mixed
     {

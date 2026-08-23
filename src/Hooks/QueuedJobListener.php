@@ -1,12 +1,12 @@
 <?php
 
-namespace Laraowl\Client\Hooks;
+namespace Tyto\Agent\Hooks;
 
 use Illuminate\Queue\Events\JobQueued;
 use Illuminate\Queue\Events\JobQueueing;
-use Laraowl\Client\Core;
-use Laraowl\Client\State\CommandState;
-use Laraowl\Client\State\RequestState;
+use Tyto\Agent\Core;
+use Tyto\Agent\State\CommandState;
+use Tyto\Agent\State\RequestState;
 use Throwable;
 
 /**
@@ -15,10 +15,10 @@ use Throwable;
 final class QueuedJobListener
 {
     /**
-     * @param  Core<RequestState|CommandState>  $laraowl
+     * @param  Core<RequestState|CommandState>  $tyto
      */
     public function __construct(
-        private Core $laraowl,
+        private Core $tyto,
     ) {
         //
     }
@@ -26,9 +26,9 @@ final class QueuedJobListener
     public function __invoke(JobQueueing|JobQueued $event): void
     {
         try {
-            $this->laraowl->queuedJob($event);
+            $this->tyto->queuedJob($event);
         } catch (Throwable $e) {
-            $this->laraowl->report($e, handled: true);
+            $this->tyto->report($e, handled: true);
         }
     }
 }

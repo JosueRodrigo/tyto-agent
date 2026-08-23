@@ -1,15 +1,15 @@
 <?php
 
-namespace Laraowl\Client;
+namespace Tyto\Agent;
 
 use Illuminate\Contracts\Auth\Authenticatable;
 use InvalidArgumentException;
-use Laraowl\Client\Contracts\Ingest;
-use Laraowl\Client\Facades\LaraowlClient;
-use Laraowl\Client\Hooks\GuzzleMiddleware;
-use Laraowl\Client\State\CommandState;
-use Laraowl\Client\State\RequestState;
-use Laraowl\Client\Support\Uuid;
+use Tyto\Agent\Contracts\Ingest;
+use Tyto\Agent\Facades\TytoAgent;
+use Tyto\Agent\Hooks\GuzzleMiddleware;
+use Tyto\Agent\State\CommandState;
+use Tyto\Agent\State\RequestState;
+use Tyto\Agent\Support\Uuid;
 use Throwable;
 use WeakMap;
 
@@ -109,7 +109,7 @@ final class Core
                 $this->ingest->flush();
             }
         } catch (Throwable $e) {
-            LaraowlClient::unrecoverableExceptionOccurred($e);
+            TytoAgent::unrecoverableExceptionOccurred($e);
         }
 
         return $this;

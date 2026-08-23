@@ -1,12 +1,12 @@
 <?php
 
-namespace Laraowl\Client\Hooks;
+namespace Tyto\Agent\Hooks;
 
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Laraowl\Client\Core;
-use Laraowl\Client\ExecutionStage;
-use Laraowl\Client\State\RequestState;
+use Tyto\Agent\Core;
+use Tyto\Agent\ExecutionStage;
+use Tyto\Agent\State\RequestState;
 use Symfony\Component\HttpFoundation\Response;
 use Throwable;
 
@@ -16,10 +16,10 @@ use Throwable;
 final class RequestLifecycleIsLongerThanHandler
 {
     /**
-     * @param  Core<RequestState>  $laraowl
+     * @param  Core<RequestState>  $tyto
      */
     public function __construct(
-        private Core $laraowl,
+        private Core $tyto,
     ) {
         //
     }
@@ -27,23 +27,23 @@ final class RequestLifecycleIsLongerThanHandler
     public function __invoke(Carbon $startedAt, Request $request, Response $response): void
     {
         try {
-            $this->laraowl->stage(ExecutionStage::End);
+            $this->tyto->stage(ExecutionStage::End);
         } catch (Throwable $e) {
-            $this->laraowl->report($e, handled: true);
+            $this->tyto->report($e, handled: true);
         }
 
         try {
-            $this->laraowl->captureUser();
+            $this->tyto->captureUser();
         } catch (Throwable $e) {
-            $this->laraowl->report($e, handled: true);
+            $this->tyto->report($e, handled: true);
         }
 
         try {
-            $this->laraowl->request($request, $response);
+            $this->tyto->request($request, $response);
         } catch (Throwable $e) {
-            $this->laraowl->report($e, handled: true);
+            $this->tyto->report($e, handled: true);
         }
 
-        $this->laraowl->finishExecution();
+        $this->tyto->finishExecution();
     }
 }

@@ -1,11 +1,11 @@
 <?php
 
-namespace Laraowl\Client;
+namespace Tyto\Agent;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\GuzzleException;
-use Laraowl\Client\Contracts\Ingest as IngestContract;
+use Tyto\Agent\Contracts\Ingest as IngestContract;
 use Ramsey\Uuid\Uuid;
 use Throwable;
 
