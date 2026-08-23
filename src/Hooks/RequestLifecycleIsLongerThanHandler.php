@@ -4,11 +4,11 @@ namespace Tyto\Agent\Hooks;
 
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Throwable;
 use Tyto\Agent\Core;
 use Tyto\Agent\ExecutionStage;
 use Tyto\Agent\State\RequestState;
-use Symfony\Component\HttpFoundation\Response;
-use Throwable;
 
 /**
  * @internal

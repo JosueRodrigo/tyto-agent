@@ -5,10 +5,10 @@ namespace Tyto\Agent\Hooks;
 use Illuminate\Console\Events\ScheduledTaskFailed;
 use Illuminate\Console\Events\ScheduledTaskFinished;
 use Illuminate\Console\Events\ScheduledTaskSkipped;
+use Throwable;
 use Tyto\Agent\Compatibility;
 use Tyto\Agent\Core;
 use Tyto\Agent\State\CommandState;
-use Throwable;
 
 /**
  * @internal

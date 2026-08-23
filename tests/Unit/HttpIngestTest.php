@@ -9,13 +9,18 @@ use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Middleware;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
+use PHPUnit\Framework\TestCase;
+use Psr\Http\Message\RequestInterface;
 use Tyto\Agent\FileSpool;
 use Tyto\Agent\HttpIngest;
 use Tyto\Agent\RecordsBuffer;
-use PHPUnit\Framework\TestCase;
-use Psr\Http\Message\RequestInterface;
 
+use function file_get_contents;
 use function json_decode;
+use function sys_get_temp_dir;
+use function trim;
+use function uniqid;
+use function unlink;
 
 final class HttpIngestTest extends TestCase
 {

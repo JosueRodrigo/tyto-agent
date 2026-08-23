@@ -5,8 +5,8 @@ namespace Tyto\Agent;
 use Illuminate\Auth\AuthManager;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Model;
-use Tyto\Agent\Types\Str;
 use Throwable;
+use Tyto\Agent\Types\Str;
 
 use function call_user_func;
 use function function_exists;

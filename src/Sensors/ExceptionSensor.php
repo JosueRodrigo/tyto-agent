@@ -4,6 +4,10 @@ namespace Tyto\Agent\Sensors;
 
 use Illuminate\Foundation\Bootstrap\HandleExceptions;
 use Illuminate\View\ViewException;
+use Spatie\LaravelIgnition\Exceptions\ViewException as IgnitionViewException;
+use SplFileObject;
+use stdClass;
+use Throwable;
 use Tyto\Agent\Clock;
 use Tyto\Agent\Facades\TytoAgent;
 use Tyto\Agent\Location;
@@ -11,10 +15,6 @@ use Tyto\Agent\Records\Exception;
 use Tyto\Agent\State\CommandState;
 use Tyto\Agent\State\RequestState;
 use Tyto\Agent\Types\Str;
-use Spatie\LaravelIgnition\Exceptions\ViewException as IgnitionViewException;
-use SplFileObject;
-use stdClass;
-use Throwable;
 
 use function array_is_list;
 use function array_keys;

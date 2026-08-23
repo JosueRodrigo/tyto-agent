@@ -10,13 +10,13 @@ use Illuminate\Console\Events\ScheduledTaskFinished;
 use Illuminate\Console\Events\ScheduledTaskSkipped;
 use Illuminate\Console\Scheduling\CallbackEvent;
 use Illuminate\Console\Scheduling\Event as SchedulingEvent;
+use ReflectionClass;
+use ReflectionFunction;
 use Tyto\Agent\Clock;
 use Tyto\Agent\Compatibility;
 use Tyto\Agent\Concerns\RecordsContext;
 use Tyto\Agent\State\CommandState;
 use Tyto\Agent\Types\Str;
-use ReflectionClass;
-use ReflectionFunction;
 
 use function base_path;
 use function hash;

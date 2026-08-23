@@ -14,13 +14,13 @@ use Illuminate\Cache\Events\RetrievingKey;
 use Illuminate\Cache\Events\RetrievingManyKeys;
 use Illuminate\Cache\Events\WritingKey;
 use Illuminate\Cache\Events\WritingManyKeys;
+use RuntimeException;
 use Tyto\Agent\Clock;
 use Tyto\Agent\Compatibility;
 use Tyto\Agent\Records\CacheEvent as CacheEventRecord;
 use Tyto\Agent\State\CommandState;
 use Tyto\Agent\State\RequestState;
 use Tyto\Agent\Types\Str;
-use RuntimeException;
 
 use function hash;
 use function in_array;

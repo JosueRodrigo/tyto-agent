@@ -3,9 +3,9 @@
 namespace Tyto\Agent\Hooks;
 
 use Illuminate\Console\Events\ArtisanStarting;
+use Throwable;
 use Tyto\Agent\Core;
 use Tyto\Agent\State\CommandState;
-use Throwable;
 
 /**
  * @internal

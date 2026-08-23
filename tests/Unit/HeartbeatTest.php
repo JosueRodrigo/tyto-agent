@@ -3,11 +3,11 @@
 namespace Tyto\Agent\Tests\Unit;
 
 use InvalidArgumentException;
+use PHPUnit\Framework\TestCase;
+use ReflectionClass;
 use Tyto\Agent\Clock;
 use Tyto\Agent\Contracts\Ingest;
 use Tyto\Agent\Core;
-use PHPUnit\Framework\TestCase;
-use ReflectionClass;
 
 final class HeartbeatTest extends TestCase
 {

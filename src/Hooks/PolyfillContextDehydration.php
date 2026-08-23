@@ -2,11 +2,11 @@
 
 namespace Tyto\Agent\Hooks;
 
+use Throwable;
 use Tyto\Agent\Compatibility;
 use Tyto\Agent\Core;
 use Tyto\Agent\State\CommandState;
 use Tyto\Agent\State\RequestState;
-use Throwable;
 
 /**
  * @internal

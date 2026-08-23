@@ -3,10 +3,10 @@
 namespace Tyto\Agent\Concerns;
 
 use Illuminate\Support\Facades\Context;
+use Throwable;
 use Tyto\Agent\Compatibility;
 use Tyto\Agent\Facades\TytoAgent;
 use Tyto\Agent\Types\Str;
-use Throwable;
 
 use function json_encode;
 

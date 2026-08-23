@@ -2,14 +2,14 @@
 
 namespace Tyto\Agent\Sensors;
 
+use Symfony\Component\Console\Input\ArgvInput;
+use Symfony\Component\Console\Input\InputInterface;
 use Tyto\Agent\Compatibility;
 use Tyto\Agent\Concerns\RecordsContext;
 use Tyto\Agent\ExecutionStage;
 use Tyto\Agent\Records\Command;
 use Tyto\Agent\State\CommandState;
 use Tyto\Agent\Types\Str;
-use Symfony\Component\Console\Input\ArgvInput;
-use Symfony\Component\Console\Input\InputInterface;
 
 use function array_sum;
 use function hash;

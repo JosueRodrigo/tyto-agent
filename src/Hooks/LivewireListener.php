@@ -2,9 +2,9 @@
 
 namespace Tyto\Agent\Hooks;
 
+use Livewire\Component;
 use Tyto\Agent\Core;
 use Tyto\Agent\State\RequestState;
-use Livewire\Component;
 
 /**
  * @internal

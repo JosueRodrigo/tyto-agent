@@ -3,9 +3,9 @@
 namespace Tyto\Agent\Hooks;
 
 use Illuminate\Routing\Events\RouteMatched;
+use Throwable;
 use Tyto\Agent\Core;
 use Tyto\Agent\State\RequestState;
-use Throwable;
 
 /**
  * @internal

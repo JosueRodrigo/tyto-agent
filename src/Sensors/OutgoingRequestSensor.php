@@ -2,13 +2,13 @@
 
 namespace Tyto\Agent\Sensors;
 
+use Psr\Http\Message\MessageInterface;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
 use Tyto\Agent\Records\OutgoingRequest;
 use Tyto\Agent\State\CommandState;
 use Tyto\Agent\State\RequestState;
 use Tyto\Agent\Types\Str;
-use Psr\Http\Message\MessageInterface;
-use Psr\Http\Message\RequestInterface;
-use Psr\Http\Message\ResponseInterface;
 
 use function hash;
 use function is_numeric;

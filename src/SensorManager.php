@@ -18,6 +18,12 @@ use Illuminate\Queue\Events\JobProcessed;
 use Illuminate\Queue\Events\JobQueued;
 use Illuminate\Queue\Events\JobQueueing;
 use Illuminate\Queue\Events\JobReleasedAfterException;
+use Monolog\LogRecord;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\HttpFoundation\Response;
+use Throwable;
 use Tyto\Agent\Records\CacheEvent as CacheEventRecord;
 use Tyto\Agent\Records\Command;
 use Tyto\Agent\Records\Exception;
@@ -44,12 +50,6 @@ use Tyto\Agent\Sensors\UserSensor;
 use Tyto\Agent\State\CommandState;
 use Tyto\Agent\State\RequestState;
 use Tyto\Agent\Types\Str;
-use Monolog\LogRecord;
-use Psr\Http\Message\RequestInterface;
-use Psr\Http\Message\ResponseInterface;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\HttpFoundation\Response;
-use Throwable;
 
 use function hash;
 

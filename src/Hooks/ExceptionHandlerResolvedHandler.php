@@ -4,10 +4,10 @@ namespace Tyto\Agent\Hooks;
 
 use Illuminate\Contracts\Debug\ExceptionHandler;
 use Illuminate\Foundation\Exceptions\Handler;
+use Throwable;
 use Tyto\Agent\Core;
 use Tyto\Agent\State\CommandState;
 use Tyto\Agent\State\RequestState;
-use Throwable;
 
 /**
  * @internal

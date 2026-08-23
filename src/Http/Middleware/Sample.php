@@ -4,10 +4,10 @@ namespace Tyto\Agent\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Throwable;
 use Tyto\Agent\Core;
 use Tyto\Agent\Facades\TytoAgent;
 use Tyto\Agent\State\RequestState;
-use Throwable;
 
 final class Sample
 {

@@ -4,13 +4,13 @@ namespace Tyto\Agent;
 
 use Illuminate\Contracts\Auth\Authenticatable;
 use InvalidArgumentException;
+use Throwable;
 use Tyto\Agent\Contracts\Ingest;
 use Tyto\Agent\Facades\TytoAgent;
 use Tyto\Agent\Hooks\GuzzleMiddleware;
 use Tyto\Agent\State\CommandState;
 use Tyto\Agent\State\RequestState;
 use Tyto\Agent\Support\Uuid;
-use Throwable;
 use WeakMap;
 
 use function preg_match;

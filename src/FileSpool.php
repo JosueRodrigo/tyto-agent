@@ -2,6 +2,21 @@
 
 namespace Tyto\Agent;
 
+use function dirname;
+use function fclose;
+use function file_put_contents;
+use function flock;
+use function fopen;
+use function ftruncate;
+use function is_array;
+use function is_dir;
+use function is_file;
+use function json_decode;
+use function json_encode;
+use function mkdir;
+use function preg_split;
+use function stream_get_contents;
+
 final class FileSpool
 {
     public function __construct(private readonly string $path) {}

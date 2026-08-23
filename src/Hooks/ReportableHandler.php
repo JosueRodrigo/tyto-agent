@@ -3,10 +3,10 @@
 namespace Tyto\Agent\Hooks;
 
 use Illuminate\Foundation\Bootstrap\HandleExceptions;
+use Throwable;
 use Tyto\Agent\Core;
 use Tyto\Agent\State\CommandState;
 use Tyto\Agent\State\RequestState;
-use Throwable;
 
 use function str_repeat;
 

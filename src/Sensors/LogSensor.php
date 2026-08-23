@@ -2,10 +2,10 @@
 
 namespace Tyto\Agent\Sensors;
 
+use Monolog\LogRecord;
 use Tyto\Agent\State\CommandState;
 use Tyto\Agent\State\RequestState;
 use Tyto\Agent\Types\Str;
-use Monolog\LogRecord;
 
 use function json_encode;
 

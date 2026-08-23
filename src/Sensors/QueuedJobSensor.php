@@ -5,6 +5,7 @@ namespace Tyto\Agent\Sensors;
 use Illuminate\Events\CallQueuedListener;
 use Illuminate\Queue\Events\JobQueued;
 use Illuminate\Queue\Events\JobQueueing;
+use ReflectionClass;
 use Tyto\Agent\Clock;
 use Tyto\Agent\Compatibility;
 use Tyto\Agent\Concerns\NormalizesQueue;
@@ -12,7 +13,6 @@ use Tyto\Agent\Records\QueuedJob;
 use Tyto\Agent\State\CommandState;
 use Tyto\Agent\State\RequestState;
 use Tyto\Agent\Types\Str;
-use ReflectionClass;
 
 use function hash;
 use function is_object;

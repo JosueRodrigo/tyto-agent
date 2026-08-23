@@ -2,8 +2,8 @@
 
 namespace Tyto\Agent\Tests\Unit;
 
-use Tyto\Agent\RecordsBuffer;
 use PHPUnit\Framework\TestCase;
+use Tyto\Agent\RecordsBuffer;
 
 final class RecordsBufferTest extends TestCase
 {

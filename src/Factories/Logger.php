@@ -3,14 +3,14 @@
 namespace Tyto\Agent\Factories;
 
 use DateTimeZone;
+use Monolog\Logger as Monolog;
+use Monolog\Processor\PsrLogMessageProcessor;
+use Psr\Log\LoggerInterface;
 use Tyto\Agent\Core;
 use Tyto\Agent\Hooks\LogHandler;
 use Tyto\Agent\Hooks\LogRecordProcessor;
 use Tyto\Agent\State\CommandState;
 use Tyto\Agent\State\RequestState;
-use Monolog\Logger as Monolog;
-use Monolog\Processor\PsrLogMessageProcessor;
-use Psr\Log\LoggerInterface;
 
 /**
  * @internal

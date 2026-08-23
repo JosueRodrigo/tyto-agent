@@ -3,11 +3,11 @@
 namespace Tyto\Agent\Hooks;
 
 use Carbon\Carbon;
+use Symfony\Component\Console\Input\InputInterface;
+use Throwable;
 use Tyto\Agent\Core;
 use Tyto\Agent\ExecutionStage;
 use Tyto\Agent\State\CommandState;
-use Symfony\Component\Console\Input\InputInterface;
-use Throwable;
 
 /**
  * @internal

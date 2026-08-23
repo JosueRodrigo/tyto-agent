@@ -6,11 +6,11 @@ use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\Http\Kernel as KernelContract;
 use Illuminate\Foundation\Events\Terminating;
 use Illuminate\Foundation\Http\Kernel;
+use Throwable;
 use Tyto\Agent\Core;
 use Tyto\Agent\Facades\TytoAgent;
 use Tyto\Agent\Http\Middleware\Sample;
 use Tyto\Agent\State\RequestState;
-use Throwable;
 
 /**
  * @internal

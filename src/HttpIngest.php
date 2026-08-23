@@ -5,11 +5,17 @@ namespace Tyto\Agent;
 use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\GuzzleException;
-use Tyto\Agent\Contracts\Ingest as IngestContract;
 use Ramsey\Uuid\Uuid;
 use Throwable;
+use Tyto\Agent\Contracts\Ingest as IngestContract;
 
+use function app;
+use function array_slice;
+use function error_log;
+use function function_exists;
 use function max;
+use function method_exists;
+use function storage_path;
 use function usleep;
 
 /**

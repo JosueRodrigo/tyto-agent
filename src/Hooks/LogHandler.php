@@ -3,14 +3,14 @@
 namespace Tyto\Agent\Hooks;
 
 use DateTimeZone;
-use Tyto\Agent\Core;
-use Tyto\Agent\State\CommandState;
-use Tyto\Agent\State\RequestState;
 use Monolog\Handler\HandlerInterface;
 use Monolog\Level;
 use Monolog\LogRecord;
 use Monolog\Processor\ProcessorInterface;
 use Throwable;
+use Tyto\Agent\Core;
+use Tyto\Agent\State\CommandState;
+use Tyto\Agent\State\RequestState;
 
 /**
  * @internal

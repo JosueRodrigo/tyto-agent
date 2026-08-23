@@ -4,10 +4,10 @@ namespace Tyto\Agent\Hooks;
 
 use Closure;
 use Illuminate\Http\Request;
+use Throwable;
 use Tyto\Agent\Core;
 use Tyto\Agent\ExecutionStage;
 use Tyto\Agent\State\RequestState;
-use Throwable;
 
 /**
  * @internal

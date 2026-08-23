@@ -7,9 +7,9 @@ use Illuminate\Queue\Events\JobPopping;
 use Illuminate\Queue\Events\JobProcessing;
 use Illuminate\Queue\Events\Looping;
 use Illuminate\Queue\Events\WorkerStopping;
+use Throwable;
 use Tyto\Agent\Core;
 use Tyto\Agent\State\CommandState;
-use Throwable;
 
 /**
  * @internal

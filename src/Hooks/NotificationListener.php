@@ -4,10 +4,10 @@ namespace Tyto\Agent\Hooks;
 
 use Illuminate\Notifications\Events\NotificationSending;
 use Illuminate\Notifications\Events\NotificationSent;
+use Throwable;
 use Tyto\Agent\Core;
 use Tyto\Agent\State\CommandState;
 use Tyto\Agent\State\RequestState;
-use Throwable;
 
 /**
  * @internal

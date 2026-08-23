@@ -3,12 +3,12 @@
 namespace Tyto\Agent\Hooks;
 
 use GuzzleHttp\Promise\PromiseInterface;
-use Tyto\Agent\Core;
-use Tyto\Agent\State\CommandState;
-use Tyto\Agent\State\RequestState;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Throwable;
+use Tyto\Agent\Core;
+use Tyto\Agent\State\CommandState;
+use Tyto\Agent\State\RequestState;
 
 /**
  * @internal

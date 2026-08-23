@@ -4,12 +4,12 @@ namespace Tyto\Agent\Sensors;
 
 use Illuminate\Mail\Events\MessageSending;
 use Illuminate\Mail\Events\MessageSent;
+use RuntimeException;
 use Tyto\Agent\Clock;
 use Tyto\Agent\Records\Mail;
 use Tyto\Agent\State\CommandState;
 use Tyto\Agent\State\RequestState;
 use Tyto\Agent\Types\Str;
-use RuntimeException;
 
 use function count;
 use function hash;

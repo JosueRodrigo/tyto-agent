@@ -4,12 +4,12 @@ namespace Tyto\Agent\Sensors;
 
 use Illuminate\Notifications\Events\NotificationSending;
 use Illuminate\Notifications\Events\NotificationSent;
+use RuntimeException;
 use Tyto\Agent\Clock;
 use Tyto\Agent\Records\Notification;
 use Tyto\Agent\State\CommandState;
 use Tyto\Agent\State\RequestState;
 use Tyto\Agent\Types\Str;
-use RuntimeException;
 
 use function hash;
 use function round;
