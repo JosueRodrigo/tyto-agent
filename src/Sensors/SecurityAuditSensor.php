@@ -19,6 +19,7 @@ use function md5_file;
 use function now;
 use function public_path;
 use function sort;
+use function str_contains;
 
 /**
  * @internal
@@ -139,8 +140,10 @@ final class SecurityAuditSensor
         $htaccess = public_path('.htaccess');
         if (File::exists($htaccess)) {
             $content = File::get($htaccess);
+
             return str_contains($content, 'Options +Indexes') || ! str_contains($content, 'Options -Indexes');
         }
+
         return true; // Defaulting to true if no htaccess (might be Nginx)
     }
 
