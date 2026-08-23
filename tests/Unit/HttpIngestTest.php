@@ -9,6 +9,7 @@ use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Middleware;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
+use Laraowl\Client\FileSpool;
 use Laraowl\Client\HttpIngest;
 use Laraowl\Client\RecordsBuffer;
 use PHPUnit\Framework\TestCase;
@@ -71,6 +72,33 @@ final class HttpIngestTest extends TestCase
             $history[0]['request']->getHeaderLine('Idempotency-Key'),
             $history[1]['request']->getHeaderLine('Idempotency-Key'),
         );
+    }
+
+    public function test_failed_batches_are_replayed_from_disk(): void
+    {
+        $path = sys_get_temp_dir().'/tyto-spool-'.uniqid().'.jsonl';
+        $failure = new ConnectException('offline', new Request('POST', '/api/v1/ingest'));
+        $history = [];
+        $ingest = new HttpIngest(
+            endpoint: 'https://tyto.example',
+            token: 'project-token',
+            timeout: 2.0,
+            buffer: new RecordsBuffer(10),
+            attempts: 1,
+            backoffMs: 0,
+            client: $this->client([$failure, new Response(202), new Response(202)], $history),
+            spool: new FileSpool($path),
+        );
+
+        $ingest->writeNow(['type' => 'exception']);
+        self::assertStringContainsString('exception', (string) file_get_contents($path));
+
+        $ingest->write(['type' => 'request']);
+        $ingest->digest();
+
+        self::assertCount(3, $history);
+        self::assertSame('', trim((string) file_get_contents($path)));
+        @unlink($path);
     }
 
     /**

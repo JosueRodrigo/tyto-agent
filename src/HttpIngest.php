@@ -28,8 +28,11 @@ final class HttpIngest implements IngestContract
         private int $attempts = 3,
         private int $backoffMs = 100,
         private ?ClientInterface $client = null,
+        private ?FileSpool $spool = null,
     ) {
-        //
+        if ($this->spool === null && function_exists('storage_path')) {
+            $this->spool = new FileSpool(storage_path('framework/tyto/spool.jsonl'));
+        }
     }
 
     public function write(array $record): void
@@ -43,7 +46,9 @@ final class HttpIngest implements IngestContract
 
     public function writeNow(array $record): void
     {
-        $this->transmit([$record]);
+        if (! $this->transmit([$record])) {
+            $this->spool?->store([$record]);
+        }
     }
 
     public function flush(): void
@@ -68,19 +73,32 @@ final class HttpIngest implements IngestContract
 
     public function digest(): void
     {
+        if ($this->spool !== null) {
+            $pending = $this->spool->drain();
+            foreach ($pending as $index => $batch) {
+                if (! $this->transmit($batch)) {
+                    foreach (array_slice($pending, $index) as $retry) {
+                        $this->spool->store($retry);
+                    }
+                    break;
+                }
+            }
+        }
         $records = $this->buffer->pullRaw();
 
         if (empty($records)) {
             return;
         }
 
-        $this->transmit($records);
+        if (! $this->transmit($records)) {
+            $this->spool?->store($records);
+        }
     }
 
     /**
      * @param  list<array<mixed>>  $records
      */
-    private function transmit(array $records): void
+    private function transmit(array $records): bool
     {
         $client = $this->client ?? new Client([
             'base_uri' => $this->endpoint,
@@ -104,7 +122,7 @@ final class HttpIngest implements IngestContract
                     ],
                 ]);
 
-                return;
+                return true;
             } catch (GuzzleException|Throwable $e) {
                 if ($attempt < $attempts) {
                     usleep(max(0, $this->backoffMs) * $attempt * 1000);
@@ -115,5 +133,7 @@ final class HttpIngest implements IngestContract
                 \Illuminate\Support\Facades\Log::error('Tyto Ingest Error: '.$e->getMessage()."\n".$e->getTraceAsString());
             }
         }
+
+        return false;
     }
 }
