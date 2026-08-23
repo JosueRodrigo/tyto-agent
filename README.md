@@ -12,6 +12,7 @@ The official Laravel telemetry collector for [Tyto](https://github.com/JosueRodr
 - cache, mail and notifications
 - outgoing HTTP requests
 - application logs and security audits
+- scheduler and custom process heartbeats
 
 ## Requirements
 
@@ -43,6 +44,11 @@ TYTO_INGEST_BUFFER=500
 TYTO_INGEST_ATTEMPTS=3
 TYTO_INGEST_BACKOFF_MS=100
 
+TYTO_HEARTBEAT_ENABLED=true
+TYTO_HEARTBEAT_SLUG=scheduler
+TYTO_HEARTBEAT_NAME="Laravel scheduler"
+TYTO_HEARTBEAT_INTERVAL=1
+
 TYTO_CAPTURE_SOURCE_CODE=true
 TYTO_CAPTURE_PAYLOAD=false
 TYTO_REDACT_FIELDS=_token,password,password_confirmation
@@ -52,6 +58,20 @@ TYTO_SAMPLE_REQUESTS=1.0
 TYTO_SAMPLE_COMMANDS=1.0
 TYTO_SAMPLE_EXCEPTIONS=1.0
 TYTO_SAMPLE_TASKS=1.0
+```
+
+The agent schedules a heartbeat automatically, which lets Tyto detect when Laravel's scheduler stops running. Keep `php artisan schedule:run` configured every minute in production.
+
+Report custom recurring processes from application code:
+
+```php
+TytoAgent::heartbeat('nightly-import', 'Nightly customer import', 1440);
+```
+
+Or from cron and deployment scripts:
+
+```bash
+php artisan tyto:heartbeat nightly-import --name="Nightly customer import" --interval=1440
 ```
 
 ## Migration from LaraOwl

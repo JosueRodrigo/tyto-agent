@@ -120,6 +120,7 @@ final class LaraowlClientServiceProvider extends ServiceProvider
      *     token?: string,
      *     server_url?: string,
      *     environment?: array{ deploy_id?: string, server_name?: string },
+     *     heartbeat?: array{ enabled?: bool, slug?: string, name?: string, interval?: int },
      *     privacy?: array{
      *         capture_source_code?: bool,
      *         capture_payload?: bool,
@@ -297,6 +298,7 @@ final class LaraowlClientServiceProvider extends ServiceProvider
     private function registerCommands(): void
     {
         $this->commands([
+            Console\HeartbeatCommand::class,
             Console\InstallCommand::class,
         ]);
     }
@@ -306,6 +308,21 @@ final class LaraowlClientServiceProvider extends ServiceProvider
         $this->app->booted(function () {
             $schedule = $this->app->make(\Illuminate\Console\Scheduling\Schedule::class);
             $schedule->call(new SecurityAuditSensor($this->core))->hourly();
+
+            $heartbeat = $this->laraowlConfig['heartbeat'] ?? [];
+
+            if ($heartbeat['enabled'] ?? true) {
+                $interval = max(1, min(59, (int) ($heartbeat['interval'] ?? 1)));
+
+                $schedule->call(fn () => $this->core->heartbeat(
+                    slug: (string) ($heartbeat['slug'] ?? 'scheduler'),
+                    name: (string) ($heartbeat['name'] ?? 'Laravel scheduler'),
+                    interval: $interval,
+                ))
+                    ->name('tyto:scheduler-heartbeat')
+                    ->cron("*/{$interval} * * * *")
+                    ->withoutOverlapping();
+            }
         });
     }
 

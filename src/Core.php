@@ -12,6 +12,9 @@ use Laraowl\Client\Support\Uuid;
 use Throwable;
 use WeakMap;
 
+use function preg_match;
+use function trim;
+
 /**
  * @template TState of RequestState|CommandState
  */
@@ -119,6 +122,30 @@ final class Core
             'v' => 1,
             'timestamp' => $this->clock->microtime(),
             'payload' => $payload,
+        ]);
+    }
+
+    /**
+     * Report that a recurring process completed successfully.
+     *
+     * @api
+     */
+    public function heartbeat(string $slug, ?string $name = null, int $interval = 15): void
+    {
+        $slug = trim($slug);
+
+        if (preg_match('/^[a-z0-9][a-z0-9._-]{0,99}$/', $slug) !== 1) {
+            throw new \InvalidArgumentException('Heartbeat slug must contain only lowercase letters, numbers, dots, dashes, or underscores.');
+        }
+
+        if ($interval < 1 || $interval > 10080) {
+            throw new \InvalidArgumentException('Heartbeat interval must be between 1 and 10080 minutes.');
+        }
+
+        $this->record('heartbeat', [
+            'slug' => $slug,
+            'name' => $name ?: ucfirst(str_replace(['-', '_', '.'], ' ', $slug)),
+            'interval' => $interval,
         ]);
     }
 
