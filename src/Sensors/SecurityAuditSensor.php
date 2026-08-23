@@ -7,6 +7,19 @@ use Laraowl\Client\Core;
 use Laraowl\Client\State\CommandState;
 use Laraowl\Client\State\RequestState;
 
+use function app;
+use function base_path;
+use function config;
+use function count;
+use function implode;
+use function in_array;
+use function json_decode;
+use function md5;
+use function md5_file;
+use function now;
+use function public_path;
+use function sort;
+
 /**
  * @internal
  */
@@ -67,7 +80,7 @@ final class SecurityAuditSensor
                 $dirHashes = [];
                 foreach ($files as $file) {
                     // Only hash PHP and config files to save time
-                    if (in_array($file->getExtension(), ['php', 'json', 'env'])) {
+                    if (in_array($file->getExtension(), ['php', 'json', 'env'], true)) {
                         $dirHashes[] = md5_file($file->getRealPath());
                     }
                 }
@@ -126,7 +139,7 @@ final class SecurityAuditSensor
         $htaccess = public_path('.htaccess');
         if (File::exists($htaccess)) {
             $content = File::get($htaccess);
-            return str_contains($content, 'Options +Indexes') || !str_contains($content, 'Options -Indexes');
+            return str_contains($content, 'Options +Indexes') || ! str_contains($content, 'Options -Indexes');
         }
         return true; // Defaulting to true if no htaccess (might be Nginx)
     }
@@ -134,7 +147,7 @@ final class SecurityAuditSensor
     private function auditDependencies(): array
     {
         $path = base_path('composer.lock');
-        if (!File::exists($path)) {
+        if (! File::exists($path)) {
             return [];
         }
 

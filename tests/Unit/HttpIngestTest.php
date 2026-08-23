@@ -14,6 +14,8 @@ use Laraowl\Client\RecordsBuffer;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\RequestInterface;
 
+use function json_decode;
+
 final class HttpIngestTest extends TestCase
 {
     public function test_it_sends_the_tyto_v1_protocol(): void

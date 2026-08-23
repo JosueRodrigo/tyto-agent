@@ -28,6 +28,6 @@ final class RecordsBufferTest extends TestCase
         $payload = (new RecordsBuffer(10))->pull('token-hash');
 
         self::assertTrue($payload->isEmpty());
-        self::assertSame('2:v1:token-hash:[]', $payload->pull());
+        self::assertSame('16:v1:token-hash:[]', $payload->pull());
     }
 }

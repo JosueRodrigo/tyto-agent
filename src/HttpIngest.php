@@ -9,6 +9,9 @@ use Laraowl\Client\Contracts\Ingest as IngestContract;
 use Ramsey\Uuid\Uuid;
 use Throwable;
 
+use function max;
+use function usleep;
+
 /**
  * @internal
  */
@@ -78,7 +81,7 @@ final class HttpIngest implements IngestContract
     {
         $client = $this->client ?? new Client([
             'base_uri' => $this->endpoint,
-            'timeout'  => $this->timeout,
+            'timeout' => $this->timeout,
         ]);
 
         $idempotencyKey = Uuid::uuid4()->toString();
