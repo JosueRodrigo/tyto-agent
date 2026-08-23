@@ -3,6 +3,7 @@
 namespace Laraowl\Client;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\GuzzleException;
 use Laraowl\Client\Contracts\Ingest as IngestContract;
 use Ramsey\Uuid\Uuid;
@@ -21,6 +22,9 @@ final class HttpIngest implements IngestContract
         private float $timeout,
         public RecordsBuffer $buffer,
         private ?string $app_url = null,
+        private int $attempts = 3,
+        private int $backoffMs = 100,
+        private ?ClientInterface $client = null,
     ) {
         //
     }
@@ -72,25 +76,38 @@ final class HttpIngest implements IngestContract
 
     private function transmit(array $records): void
     {
-        $client = new Client([
+        $client = $this->client ?? new Client([
             'base_uri' => $this->endpoint,
             'timeout'  => $this->timeout,
         ]);
 
-        try {
-            $client->post('/api/v1/ingest', [
-                'headers' => [
-                    'X-Tyto-Token'  => $this->token,
-                    'Idempotency-Key' => Uuid::uuid4()->toString(),
-                    'Accept'        => 'application/json',
-                ],
-                'json' => [
-                    'app_url' => $this->app_url,
-                    'records' => $records,
-                ],
-            ]);
-        } catch (GuzzleException | Throwable $e) {
-            \Illuminate\Support\Facades\Log::error('Tyto Ingest Error: ' . $e->getMessage() . "\n" . $e->getTraceAsString());
+        $idempotencyKey = Uuid::uuid4()->toString();
+        $attempts = max(1, $this->attempts);
+
+        for ($attempt = 1; $attempt <= $attempts; $attempt++) {
+            try {
+                $client->post('/api/v1/ingest', [
+                    'headers' => [
+                        'X-Tyto-Token' => $this->token,
+                        'Idempotency-Key' => $idempotencyKey,
+                        'Accept' => 'application/json',
+                    ],
+                    'json' => [
+                        'app_url' => $this->app_url,
+                        'records' => $records,
+                    ],
+                ]);
+
+                return;
+            } catch (GuzzleException | Throwable $e) {
+                if ($attempt < $attempts) {
+                    usleep(max(0, $this->backoffMs) * $attempt * 1000);
+
+                    continue;
+                }
+
+                \Illuminate\Support\Facades\Log::error('Tyto Ingest Error: '.$e->getMessage()."\n".$e->getTraceAsString());
+            }
         }
     }
 }

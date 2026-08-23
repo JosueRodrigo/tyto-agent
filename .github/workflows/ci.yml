@@ -1,0 +1,68 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  tests:
+    name: PHP ${{ matrix.php }} / Laravel ${{ matrix.laravel }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - php: '8.2'
+            laravel: '^10.0'
+          - php: '8.2'
+            laravel: '^11.0'
+          - php: '8.3'
+            laravel: '^12.0'
+          - php: '8.4'
+            laravel: '^12.0'
+          - php: '8.4'
+            laravel: '^13.0'
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          coverage: none
+          extensions: pcntl, pdo, sqlite, zlib
+          tools: composer:v2
+
+      - name: Validate package metadata
+        run: composer validate --strict
+
+      - name: Select Laravel version
+        run: composer require "laravel/framework:${{ matrix.laravel }}" --no-interaction --no-update
+
+      - name: Install dependencies
+        run: composer update --prefer-dist --no-interaction --no-progress
+
+      - name: Run tests
+        run: composer test
+
+  quality:
+    name: Static analysis and style
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          coverage: none
+          extensions: pcntl, pdo, sqlite, zlib
+          tools: composer:v2
+
+      - run: composer install --prefer-dist --no-interaction --no-progress
+      - run: vendor/bin/pint --test
+      - run: vendor/bin/phpstan --memory-limit=-1
