@@ -238,6 +238,8 @@ final class LaraowlClientServiceProvider extends ServiceProvider
                     length: $this->laraowlConfig['ingest']['buffer_size'] ?? 500,
                 ),
                 app_url: $this->config->get('app.url'),
+                attempts: $this->laraowlConfig['ingest']['attempts'] ?? 3,
+                backoffMs: $this->laraowlConfig['ingest']['backoff_ms'] ?? 100,
             ),
             sensor: new SensorManager(
                 executionState: $executionState,

@@ -35,5 +35,7 @@ return [
     'ingest' => [
         'timeout' => (float) env('TYTO_INGEST_TIMEOUT', config('laraowl.ingest.timeout', env('LARAOWL_INGEST_TIMEOUT', 2.0))),
         'buffer_size' => (int) env('TYTO_INGEST_BUFFER', config('laraowl.ingest.buffer_size', env('LARAOWL_INGEST_BUFFER', 500))),
+        'attempts' => (int) env('TYTO_INGEST_ATTEMPTS', 3),
+        'backoff_ms' => (int) env('TYTO_INGEST_BACKOFF_MS', 100),
     ],
 ];

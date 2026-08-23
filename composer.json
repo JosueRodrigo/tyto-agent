@@ -42,6 +42,13 @@
         }
     },
     "scripts": {
+        "test": "@php vendor/bin/phpunit",
+        "test:unit": "@php vendor/bin/phpunit --testsuite Unit",
+        "check": [
+            "@php vendor/bin/pint --test",
+            "@php vendor/bin/phpstan --memory-limit=-1",
+            "@test"
+        ],
         "lint": [
             "@php vendor/bin/phpstan --memory-limit=-1 --verbose",
             "@php vendor/bin/pint --cache-file=.pint.cache"
