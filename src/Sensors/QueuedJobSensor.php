@@ -1,17 +1,17 @@
 <?php
 
-namespace Laraowl\Client\Sensors;
+namespace Tyto\Agent\Sensors;
 
 use Illuminate\Events\CallQueuedListener;
 use Illuminate\Queue\Events\JobQueued;
 use Illuminate\Queue\Events\JobQueueing;
-use Laraowl\Client\Clock;
-use Laraowl\Client\Compatibility;
-use Laraowl\Client\Concerns\NormalizesQueue;
-use Laraowl\Client\Records\QueuedJob;
-use Laraowl\Client\State\CommandState;
-use Laraowl\Client\State\RequestState;
-use Laraowl\Client\Types\Str;
+use Tyto\Agent\Clock;
+use Tyto\Agent\Compatibility;
+use Tyto\Agent\Concerns\NormalizesQueue;
+use Tyto\Agent\Records\QueuedJob;
+use Tyto\Agent\State\CommandState;
+use Tyto\Agent\State\RequestState;
+use Tyto\Agent\Types\Str;
 use ReflectionClass;
 
 use function hash;
@@ -62,7 +62,7 @@ final class QueuedJobSensor
 
         return [
             $record = new QueuedJob(
-                jobId: $event->payload()['laraowl']['job_id'] ?? $event->payload()['uuid'],
+                jobId: $event->payload()['tyto']['job_id'] ?? $event->payload()['uuid'],
                 name: $name,
                 connection: $event->connectionName,
                 queue: $this->normalizeQueue($event->connectionName, $this->resolveQueue($event)),

@@ -1,12 +1,12 @@
 <?php
 
-namespace Laraowl\Client\Hooks;
+namespace Tyto\Agent\Hooks;
 
 use Illuminate\Contracts\Debug\ExceptionHandler;
 use Illuminate\Foundation\Exceptions\Handler;
-use Laraowl\Client\Core;
-use Laraowl\Client\State\CommandState;
-use Laraowl\Client\State\RequestState;
+use Tyto\Agent\Core;
+use Tyto\Agent\State\CommandState;
+use Tyto\Agent\State\RequestState;
 use Throwable;
 
 /**
@@ -15,10 +15,10 @@ use Throwable;
 final class ExceptionHandlerResolvedHandler
 {
     /**
-     * @param  Core<RequestState|CommandState>  $laraowl
+     * @param  Core<RequestState|CommandState>  $tyto
      */
     public function __construct(
-        private Core $laraowl,
+        private Core $tyto,
     ) {
         //
     }
@@ -28,12 +28,12 @@ final class ExceptionHandlerResolvedHandler
         try {
             if ($handler instanceof Handler) {
                 /**
-                 * @see \Laraowl\Client\Records\Exception
+                 * @see \Tyto\Agent\Records\Exception
                  */
-                $handler->reportable(new ReportableHandler($this->laraowl));
+                $handler->reportable(new ReportableHandler($this->tyto));
             }
         } catch (Throwable $e) {
-            $this->laraowl->report($e, handled: true);
+            $this->tyto->report($e, handled: true);
         }
     }
 }

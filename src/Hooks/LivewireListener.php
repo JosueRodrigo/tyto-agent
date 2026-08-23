@@ -1,9 +1,9 @@
 <?php
 
-namespace Laraowl\Client\Hooks;
+namespace Tyto\Agent\Hooks;
 
-use Laraowl\Client\Core;
-use Laraowl\Client\State\RequestState;
+use Tyto\Agent\Core;
+use Tyto\Agent\State\RequestState;
 use Livewire\Component;
 
 /**
@@ -12,10 +12,10 @@ use Livewire\Component;
 final class LivewireListener
 {
     /**
-     * @param  Core<RequestState>  $laraowl
+     * @param  Core<RequestState>  $tyto
      */
     public function __construct(
-        private Core $laraowl
+        private Core $tyto
     ) {
         //
     }
@@ -55,7 +55,7 @@ final class LivewireListener
 
     public function componentHydrateSubsequent(Component $component): void
     {
-        $this->laraowl->captureRequestRouteAction($component::class);
+        $this->tyto->captureRequestRouteAction($component::class);
     }
 
     /* Livewire 3 Events
@@ -87,6 +87,6 @@ final class LivewireListener
 
     public function hydrate(Component $component): void
     {
-        $this->laraowl->captureRequestRouteAction($component::class);
+        $this->tyto->captureRequestRouteAction($component::class);
     }
 }

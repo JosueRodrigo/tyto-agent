@@ -1,6 +1,6 @@
 <?php
 
-namespace Laraowl\Client\Console;
+namespace Tyto\Agent\Console;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
@@ -12,8 +12,6 @@ use function str_contains;
 class InstallCommand extends Command
 {
     protected $signature = 'tyto:install';
-
-    protected $aliases = ['laraowl:install'];
 
     protected $description = 'Install and configure the Tyto Laravel agent';
 

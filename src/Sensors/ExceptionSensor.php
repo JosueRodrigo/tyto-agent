@@ -1,16 +1,16 @@
 <?php
 
-namespace Laraowl\Client\Sensors;
+namespace Tyto\Agent\Sensors;
 
 use Illuminate\Foundation\Bootstrap\HandleExceptions;
 use Illuminate\View\ViewException;
-use Laraowl\Client\Clock;
-use Laraowl\Client\Facades\LaraowlClient;
-use Laraowl\Client\Location;
-use Laraowl\Client\Records\Exception;
-use Laraowl\Client\State\CommandState;
-use Laraowl\Client\State\RequestState;
-use Laraowl\Client\Types\Str;
+use Tyto\Agent\Clock;
+use Tyto\Agent\Facades\TytoAgent;
+use Tyto\Agent\Location;
+use Tyto\Agent\Records\Exception;
+use Tyto\Agent\State\CommandState;
+use Tyto\Agent\State\RequestState;
+use Tyto\Agent\Types\Str;
 use Spatie\LaravelIgnition\Exceptions\ViewException as IgnitionViewException;
 use SplFileObject;
 use stdClass;
@@ -241,7 +241,7 @@ final class ExceptionSensor
 
             return $code;
         } catch (Throwable $e) {
-            LaraowlClient::unrecoverableExceptionOccurred($e);
+            TytoAgent::unrecoverableExceptionOccurred($e);
 
             return null;
         }
@@ -255,7 +255,7 @@ final class ExceptionSensor
         try {
             return new SplFileObject($file);
         } catch (Throwable $e) {
-            LaraowlClient::unrecoverableExceptionOccurred($e);
+            TytoAgent::unrecoverableExceptionOccurred($e);
 
             return null;
         }

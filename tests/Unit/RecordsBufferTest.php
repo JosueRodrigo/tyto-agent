@@ -1,8 +1,8 @@
 <?php
 
-namespace Laraowl\Client\Tests\Unit;
+namespace Tyto\Agent\Tests\Unit;
 
-use Laraowl\Client\RecordsBuffer;
+use Tyto\Agent\RecordsBuffer;
 use PHPUnit\Framework\TestCase;
 
 final class RecordsBufferTest extends TestCase

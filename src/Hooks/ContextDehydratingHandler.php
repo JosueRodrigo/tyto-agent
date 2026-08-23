@@ -1,11 +1,11 @@
 <?php
 
-namespace Laraowl\Client\Hooks;
+namespace Tyto\Agent\Hooks;
 
 use Illuminate\Log\Context\Repository;
-use Laraowl\Client\Core;
-use Laraowl\Client\State\CommandState;
-use Laraowl\Client\State\RequestState;
+use Tyto\Agent\Core;
+use Tyto\Agent\State\CommandState;
+use Tyto\Agent\State\RequestState;
 use Throwable;
 
 /**
@@ -14,10 +14,10 @@ use Throwable;
 final class ContextDehydratingHandler
 {
     /**
-     * @param  Core<RequestState|CommandState>  $laraowl
+     * @param  Core<RequestState|CommandState>  $tyto
      */
     public function __construct(
-        private Core $laraowl,
+        private Core $tyto,
     ) {
         //
     }
@@ -25,11 +25,11 @@ final class ContextDehydratingHandler
     public function __invoke(Repository $context): void
     {
         try {
-            if (($context->getHidden('laraowl_user_id') ?? '') === '') {
-                $context->addHidden('laraowl_user_id', $this->laraowl->executionState->user->resolvedUserId());
+            if (($context->getHidden('tyto_user_id') ?? '') === '') {
+                $context->addHidden('tyto_user_id', $this->tyto->executionState->user->resolvedUserId());
             }
         } catch (Throwable $e) {
-            $this->laraowl->report($e);
+            $this->tyto->report($e);
         }
     }
 }

@@ -1,12 +1,12 @@
 <?php
 
-namespace Laraowl\Client\Hooks;
+namespace Tyto\Agent\Hooks;
 
 use Illuminate\Console\Events\CommandFinished;
-use Laraowl\Client\Compatibility;
-use Laraowl\Client\Core;
-use Laraowl\Client\ExecutionStage;
-use Laraowl\Client\State\CommandState;
+use Tyto\Agent\Compatibility;
+use Tyto\Agent\Core;
+use Tyto\Agent\ExecutionStage;
+use Tyto\Agent\State\CommandState;
 use Throwable;
 
 /**
@@ -15,10 +15,10 @@ use Throwable;
 final class CommandFinishedListener
 {
     /**
-     * @param  Core<CommandState>  $laraowl
+     * @param  Core<CommandState>  $tyto
      */
     public function __construct(
-        private Core $laraowl,
+        private Core $tyto,
     ) {
         //
     }
@@ -26,11 +26,11 @@ final class CommandFinishedListener
     public function __invoke(CommandFinished $event): void
     {
         try {
-            if ($this->laraowl->capturingCommandNamed($event->command) && ! Compatibility::$terminatingEventExists) {
-                $this->laraowl->stage(ExecutionStage::Terminating);
+            if ($this->tyto->capturingCommandNamed($event->command) && ! Compatibility::$terminatingEventExists) {
+                $this->tyto->stage(ExecutionStage::Terminating);
             }
         } catch (Throwable $e) {
-            $this->laraowl->report($e, handled: true);
+            $this->tyto->report($e, handled: true);
         }
     }
 }

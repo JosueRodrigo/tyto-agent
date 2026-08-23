@@ -1,6 +1,6 @@
 <?php
 
-namespace Laraowl\Client\Sensors;
+namespace Tyto\Agent\Sensors;
 
 use Illuminate\Cache\Events\CacheEvent;
 use Illuminate\Cache\Events\CacheHit;
@@ -14,12 +14,12 @@ use Illuminate\Cache\Events\RetrievingKey;
 use Illuminate\Cache\Events\RetrievingManyKeys;
 use Illuminate\Cache\Events\WritingKey;
 use Illuminate\Cache\Events\WritingManyKeys;
-use Laraowl\Client\Clock;
-use Laraowl\Client\Compatibility;
-use Laraowl\Client\Records\CacheEvent as CacheEventRecord;
-use Laraowl\Client\State\CommandState;
-use Laraowl\Client\State\RequestState;
-use Laraowl\Client\Types\Str;
+use Tyto\Agent\Clock;
+use Tyto\Agent\Compatibility;
+use Tyto\Agent\Records\CacheEvent as CacheEventRecord;
+use Tyto\Agent\State\CommandState;
+use Tyto\Agent\State\RequestState;
+use Tyto\Agent\Types\Str;
 use RuntimeException;
 
 use function hash;

@@ -1,13 +1,13 @@
 <?php
 
-namespace Laraowl\Client\Hooks;
+namespace Tyto\Agent\Hooks;
 
 use Illuminate\Foundation\Events\Terminating;
-use Laraowl\Client\Compatibility;
-use Laraowl\Client\Core;
-use Laraowl\Client\ExecutionStage;
-use Laraowl\Client\State\CommandState;
-use Laraowl\Client\State\RequestState;
+use Tyto\Agent\Compatibility;
+use Tyto\Agent\Core;
+use Tyto\Agent\ExecutionStage;
+use Tyto\Agent\State\CommandState;
+use Tyto\Agent\State\RequestState;
 use Throwable;
 
 /**
@@ -16,10 +16,10 @@ use Throwable;
 final class TerminatingListener
 {
     /**
-     * @param  Core<RequestState|CommandState>  $laraowl
+     * @param  Core<RequestState|CommandState>  $tyto
      */
     public function __construct(
-        private Core $laraowl,
+        private Core $tyto,
     ) {
         //
     }
@@ -31,9 +31,9 @@ final class TerminatingListener
         }
 
         try {
-            $this->laraowl->stage(ExecutionStage::Terminating);
+            $this->tyto->stage(ExecutionStage::Terminating);
         } catch (Throwable $e) {
-            $this->laraowl->report($e, handled: true);
+            $this->tyto->report($e, handled: true);
         }
     }
 }

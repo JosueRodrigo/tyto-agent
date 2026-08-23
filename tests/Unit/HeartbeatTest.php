@@ -1,11 +1,11 @@
 <?php
 
-namespace Laraowl\Client\Tests\Unit;
+namespace Tyto\Agent\Tests\Unit;
 
 use InvalidArgumentException;
-use Laraowl\Client\Clock;
-use Laraowl\Client\Contracts\Ingest;
-use Laraowl\Client\Core;
+use Tyto\Agent\Clock;
+use Tyto\Agent\Contracts\Ingest;
+use Tyto\Agent\Core;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 

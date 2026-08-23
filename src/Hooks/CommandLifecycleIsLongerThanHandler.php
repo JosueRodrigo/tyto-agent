@@ -1,11 +1,11 @@
 <?php
 
-namespace Laraowl\Client\Hooks;
+namespace Tyto\Agent\Hooks;
 
 use Carbon\Carbon;
-use Laraowl\Client\Core;
-use Laraowl\Client\ExecutionStage;
-use Laraowl\Client\State\CommandState;
+use Tyto\Agent\Core;
+use Tyto\Agent\ExecutionStage;
+use Tyto\Agent\State\CommandState;
 use Symfony\Component\Console\Input\InputInterface;
 use Throwable;
 
@@ -15,10 +15,10 @@ use Throwable;
 final class CommandLifecycleIsLongerThanHandler
 {
     /**
-     * @param  Core<CommandState>  $laraowl
+     * @param  Core<CommandState>  $tyto
      */
     public function __construct(
-        private Core $laraowl,
+        private Core $tyto,
     ) {
         //
     }
@@ -26,17 +26,17 @@ final class CommandLifecycleIsLongerThanHandler
     public function __invoke(Carbon $startedAt, InputInterface $input, int $status): void
     {
         try {
-            $this->laraowl->stage(ExecutionStage::End);
+            $this->tyto->stage(ExecutionStage::End);
         } catch (Throwable $e) {
-            $this->laraowl->report($e, handled: true);
+            $this->tyto->report($e, handled: true);
         }
 
         try {
-            $this->laraowl->command($input, $status);
+            $this->tyto->command($input, $status);
         } catch (Throwable $e) {
-            $this->laraowl->report($e, handled: true);
+            $this->tyto->report($e, handled: true);
         }
 
-        $this->laraowl->finishExecution();
+        $this->tyto->finishExecution();
     }
 }

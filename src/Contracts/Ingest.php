@@ -1,6 +1,6 @@
 <?php
 
-namespace Laraowl\Client\Contracts;
+namespace Tyto\Agent\Contracts;
 
 use Deprecated;
 

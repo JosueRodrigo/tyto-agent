@@ -1,6 +1,6 @@
 <?php
 
-namespace Laraowl\Client\Hooks;
+namespace Tyto\Agent\Hooks;
 
 use Illuminate\Console\Events\CommandFinished;
 use Illuminate\Console\Events\CommandStarting;
@@ -18,9 +18,9 @@ use Illuminate\Queue\Events\JobProcessing;
 use Illuminate\Queue\Events\JobReleasedAfterException;
 use Illuminate\Queue\Events\Looping;
 use Illuminate\Queue\Events\WorkerStopping;
-use Laraowl\Client\Core;
-use Laraowl\Client\Facades\LaraowlClient;
-use Laraowl\Client\State\CommandState;
+use Tyto\Agent\Core;
+use Tyto\Agent\Facades\TytoAgent;
+use Tyto\Agent\State\CommandState;
 use Throwable;
 
 /**
@@ -31,11 +31,11 @@ final class CommandStartingListener
     private bool $hasRun = false;
 
     /**
-     * @param  Core<CommandState>  $laraowl
+     * @param  Core<CommandState>  $tyto
      */
     public function __construct(
         private Dispatcher $events,
-        private Core $laraowl,
+        private Core $tyto,
         private ConsoleKernelContract $kernel,
     ) {
         //
@@ -57,19 +57,19 @@ final class CommandStartingListener
                 default => $this->registerCommandHooks($event),
             };
         } catch (Throwable $e) {
-            LaraowlClient::unrecoverableExceptionOccurred($e);
+            TytoAgent::unrecoverableExceptionOccurred($e);
         }
     }
 
     private function registerJobHooks(CommandStarting $event): void
     {
-        $this->laraowl->configureForJobs();
+        $this->tyto->configureForJobs();
 
         /**
-         * @see \Laraowl\Client\Core::finishExecution()
-         * @see \Laraowl\Client\State\CommandState::flush()
-         * @see \Laraowl\Client\State\CommandState::$timestamp
-         * @see \Laraowl\Client\State\CommandState::$id
+         * @see \Tyto\Agent\Core::finishExecution()
+         * @see \Tyto\Agent\State\CommandState::flush()
+         * @see \Tyto\Agent\State\CommandState::$timestamp
+         * @see \Tyto\Agent\State\CommandState::$id
          */
         $this->events->listen([
             Looping::class,
@@ -77,37 +77,37 @@ final class CommandStartingListener
             JobProcessing::class,
             WorkerStopping::class,
             CommandFinished::class,
-        ], (new WorkerLifecycleListener($this->laraowl))(...));
+        ], (new WorkerLifecycleListener($this->tyto))(...));
 
         /**
-         * @see \Laraowl\Client\Records\JobAttempt
-         * @see \Laraowl\Client\Core::finishExecution()
+         * @see \Tyto\Agent\Records\JobAttempt
+         * @see \Tyto\Agent\Core::finishExecution()
          */
         $this->events->listen([
             JobProcessed::class,
             JobReleasedAfterException::class,
             JobFailed::class,
-        ], (new JobAttemptListener($this->laraowl))(...));
+        ], (new JobAttemptListener($this->tyto))(...));
 
         if ($event->command === 'vapor:work') {
-            $this->events->listen(CommandFinished::class, (new VaporWorkCommandFinishedListener($this->laraowl))(...));
+            $this->events->listen(CommandFinished::class, (new VaporWorkCommandFinishedListener($this->tyto))(...));
         }
     }
 
     private function registerScheduledTaskHooks(): void
     {
-        $this->laraowl->configureForScheduledTasks();
+        $this->tyto->configureForScheduledTasks();
 
-        $this->events->listen(ScheduledTaskStarting::class, (new ScheduledTaskStartingListener($this->laraowl))(...));
+        $this->events->listen(ScheduledTaskStarting::class, (new ScheduledTaskStartingListener($this->tyto))(...));
 
         /**
-         * @see \Laraowl\Client\Core::finishExecution()
+         * @see \Tyto\Agent\Core::finishExecution()
          */
         $this->events->listen([
             ScheduledTaskFinished::class,
             ScheduledTaskSkipped::class,
             ScheduledTaskFailed::class,
-        ], (new ScheduledTaskListener($this->laraowl))(...));
+        ], (new ScheduledTaskListener($this->tyto))(...));
     }
 
     private function registerCommandHooks(CommandStarting $event): void
@@ -116,20 +116,20 @@ final class CommandStartingListener
             return;
         }
 
-        $this->laraowl->configureCommandSampling($event->command);
+        $this->tyto->configureCommandSampling($event->command);
 
-        $this->laraowl->prepareForCommand($event->command);
-
-        /**
-         * @see \Laraowl\Client\ExecutionStage::Terminating
-         */
-        $this->events->listen(CommandFinished::class, (new CommandFinishedListener($this->laraowl))(...));
+        $this->tyto->prepareForCommand($event->command);
 
         /**
-         * @see \Laraowl\Client\ExecutionStage::End
-         * @see \Laraowl\Client\Records\Command
-         * @see \Laraowl\Client\Core::finishExecution()
+         * @see \Tyto\Agent\ExecutionStage::Terminating
          */
-        $this->kernel->whenCommandLifecycleIsLongerThan(-1, new CommandLifecycleIsLongerThanHandler($this->laraowl));
+        $this->events->listen(CommandFinished::class, (new CommandFinishedListener($this->tyto))(...));
+
+        /**
+         * @see \Tyto\Agent\ExecutionStage::End
+         * @see \Tyto\Agent\Records\Command
+         * @see \Tyto\Agent\Core::finishExecution()
+         */
+        $this->kernel->whenCommandLifecycleIsLongerThan(-1, new CommandLifecycleIsLongerThanHandler($this->tyto));
     }
 }

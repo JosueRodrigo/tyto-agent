@@ -1,14 +1,14 @@
 <?php
 
-namespace Laraowl\Client\Hooks;
+namespace Tyto\Agent\Hooks;
 
 use Closure;
 use Illuminate\Http\Request;
-use Laraowl\Client\Compatibility;
-use Laraowl\Client\Core;
-use Laraowl\Client\ExecutionStage;
-use Laraowl\Client\Facades\LaraowlClient;
-use Laraowl\Client\State\RequestState;
+use Tyto\Agent\Compatibility;
+use Tyto\Agent\Core;
+use Tyto\Agent\ExecutionStage;
+use Tyto\Agent\Facades\TytoAgent;
+use Tyto\Agent\State\RequestState;
 use Symfony\Component\HttpFoundation\Response;
 use Throwable;
 
@@ -22,10 +22,10 @@ final class GlobalMiddleware
     private bool $hasTerminated = false;
 
     /**
-     * @param  Core<RequestState>  $laraowl
+     * @param  Core<RequestState>  $tyto
      */
     public function __construct(
-        private Core $laraowl,
+        private Core $tyto,
     ) {
         //
     }
@@ -39,15 +39,15 @@ final class GlobalMiddleware
         $this->hasHandledRequest = true;
 
         try {
-            $this->laraowl->configureRequestSampling();
+            $this->tyto->configureRequestSampling();
         } catch (Throwable $e) {
-            LaraowlClient::unrecoverableExceptionOccurred($e);
+            TytoAgent::unrecoverableExceptionOccurred($e);
         }
 
         try {
-            $this->laraowl->captureRequestPreview($request);
+            $this->tyto->captureRequestPreview($request);
         } catch (Throwable $e) {
-            $this->laraowl->report($e, handled: true);
+            $this->tyto->report($e, handled: true);
         }
 
         return $next($request);
@@ -62,9 +62,9 @@ final class GlobalMiddleware
         $this->hasTerminated = true;
 
         try {
-            $this->laraowl->stage(ExecutionStage::Terminating);
+            $this->tyto->stage(ExecutionStage::Terminating);
         } catch (Throwable $e) {
-            $this->laraowl->report($e, handled: true);
+            $this->tyto->report($e, handled: true);
         }
     }
 }

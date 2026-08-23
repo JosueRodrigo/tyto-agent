@@ -1,10 +1,10 @@
 <?php
 
-namespace Laraowl\Client\Hooks;
+namespace Tyto\Agent\Hooks;
 
 use Illuminate\Console\Events\ArtisanStarting;
-use Laraowl\Client\Core;
-use Laraowl\Client\State\CommandState;
+use Tyto\Agent\Core;
+use Tyto\Agent\State\CommandState;
 use Throwable;
 
 /**
@@ -13,10 +13,10 @@ use Throwable;
 final class ArtisanStartingListener
 {
     /**
-     * @param  Core<CommandState>  $laraowl
+     * @param  Core<CommandState>  $tyto
      */
     public function __construct(
-        private Core $laraowl,
+        private Core $tyto,
     ) {
         //
     }
@@ -24,9 +24,9 @@ final class ArtisanStartingListener
     public function __invoke(ArtisanStarting $event): void
     {
         try {
-            $this->laraowl->captureArtisan($event->artisan);
+            $this->tyto->captureArtisan($event->artisan);
         } catch (Throwable $e) {
-            $this->laraowl->report($e, handled: true);
+            $this->tyto->report($e, handled: true);
         }
     }
 }

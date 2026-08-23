@@ -1,12 +1,12 @@
 <?php
 
-namespace Laraowl\Client\Hooks;
+namespace Tyto\Agent\Hooks;
 
 use Closure;
 use Illuminate\Http\Request;
-use Laraowl\Client\Core;
-use Laraowl\Client\ExecutionStage;
-use Laraowl\Client\State\RequestState;
+use Tyto\Agent\Core;
+use Tyto\Agent\ExecutionStage;
+use Tyto\Agent\State\RequestState;
 use Throwable;
 
 /**
@@ -15,10 +15,10 @@ use Throwable;
 final class RouteMiddleware
 {
     /**
-     * @param  Core<RequestState>  $laraowl
+     * @param  Core<RequestState>  $tyto
      */
     public function __construct(
-        private Core $laraowl,
+        private Core $tyto,
     ) {
         //
     }
@@ -26,9 +26,9 @@ final class RouteMiddleware
     public function handle(Request $request, Closure $next): mixed
     {
         try {
-            $this->laraowl->stage(ExecutionStage::Action);
+            $this->tyto->stage(ExecutionStage::Action);
         } catch (Throwable $e) {
-            $this->laraowl->report($e, handled: true);
+            $this->tyto->report($e, handled: true);
         }
 
         $response = $next($request);
@@ -37,9 +37,9 @@ final class RouteMiddleware
         // ResponsePrepared event is not fired. This fallback
         // ensures that we go to the AfterMiddleware stage.
         try {
-            $this->laraowl->stage(ExecutionStage::AfterMiddleware);
+            $this->tyto->stage(ExecutionStage::AfterMiddleware);
         } catch (Throwable $e) {
-            $this->laraowl->report($e, handled: true);
+            $this->tyto->report($e, handled: true);
         }
 
         return $response;

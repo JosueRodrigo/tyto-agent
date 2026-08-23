@@ -1,11 +1,11 @@
 <?php
 
-namespace Laraowl\Client\Hooks;
+namespace Tyto\Agent\Hooks;
 
-use Laraowl\Client\Compatibility;
-use Laraowl\Client\Core;
-use Laraowl\Client\State\CommandState;
-use Laraowl\Client\State\RequestState;
+use Tyto\Agent\Compatibility;
+use Tyto\Agent\Core;
+use Tyto\Agent\State\CommandState;
+use Tyto\Agent\State\RequestState;
 use Throwable;
 
 /**
@@ -14,10 +14,10 @@ use Throwable;
 final class PolyfillContextDehydration
 {
     /**
-     * @param  Core<RequestState|CommandState>  $laraowl
+     * @param  Core<RequestState|CommandState>  $tyto
      */
     public function __construct(
-        private Core $laraowl,
+        private Core $tyto,
     ) {
         //
     }
@@ -31,21 +31,21 @@ final class PolyfillContextDehydration
         $context = Compatibility::$context;
 
         try {
-            if (($context['laraowl_user_id'] ?? '') === '') {
-                $context['laraowl_user_id'] = $this->laraowl->executionState->user->resolvedUserId();
+            if (($context['tyto_user_id'] ?? '') === '') {
+                $context['tyto_user_id'] = $this->tyto->executionState->user->resolvedUserId();
             }
 
             return [
                 ...$payload,
-                'laraowl' => [
-                    ...($payload['laraowl'] ?? []), // @phpstan-ignore arrayUnpacking.nonIterable
-                    'laraowl_trace_id' => $context['laraowl_trace_id'] ?? null,
-                    'laraowl_should_sample' => $context['laraowl_should_sample'] ?? null,
-                    'laraowl_user_id' => $context['laraowl_user_id'],
+                'tyto' => [
+                    ...($payload['tyto'] ?? []), // @phpstan-ignore arrayUnpacking.nonIterable
+                    'tyto_trace_id' => $context['tyto_trace_id'] ?? null,
+                    'tyto_should_sample' => $context['tyto_should_sample'] ?? null,
+                    'tyto_user_id' => $context['tyto_user_id'],
                 ],
             ];
         } catch (Throwable $e) {
-            $this->laraowl->report($e);
+            $this->tyto->report($e);
 
             return $payload;
         }

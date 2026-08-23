@@ -1,11 +1,11 @@
 <?php
 
-namespace Laraowl\Client\Hooks;
+namespace Tyto\Agent\Hooks;
 
 use Illuminate\Foundation\Bootstrap\HandleExceptions;
-use Laraowl\Client\Core;
-use Laraowl\Client\State\CommandState;
-use Laraowl\Client\State\RequestState;
+use Tyto\Agent\Core;
+use Tyto\Agent\State\CommandState;
+use Tyto\Agent\State\RequestState;
 use Throwable;
 
 use function str_repeat;
@@ -18,10 +18,10 @@ final class ReportableHandler
     public ?string $reservedMemory;
 
     /**
-     * @param  Core<RequestState|CommandState>  $laraowl
+     * @param  Core<RequestState|CommandState>  $tyto
      */
     public function __construct(
-        private Core $laraowl,
+        private Core $tyto,
     ) {
         $this->reservedMemory = str_repeat('n', 32768);
     }
@@ -32,10 +32,10 @@ final class ReportableHandler
             $this->reservedMemory = null;
         }
 
-        if ($this->laraowl->executionState->source === 'schedule') {
+        if ($this->tyto->executionState->source === 'schedule') {
             return;
         }
 
-        $this->laraowl->report($e);
+        $this->tyto->report($e);
     }
 }

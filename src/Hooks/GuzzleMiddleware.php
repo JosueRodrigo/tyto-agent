@@ -1,11 +1,11 @@
 <?php
 
-namespace Laraowl\Client\Hooks;
+namespace Tyto\Agent\Hooks;
 
 use GuzzleHttp\Promise\PromiseInterface;
-use Laraowl\Client\Core;
-use Laraowl\Client\State\CommandState;
-use Laraowl\Client\State\RequestState;
+use Tyto\Agent\Core;
+use Tyto\Agent\State\CommandState;
+use Tyto\Agent\State\RequestState;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Throwable;
@@ -16,10 +16,10 @@ use Throwable;
 final class GuzzleMiddleware
 {
     /**
-     * @param  Core<RequestState|CommandState>  $laraowl
+     * @param  Core<RequestState|CommandState>  $tyto
      */
     public function __construct(
-        private Core $laraowl,
+        private Core $tyto,
     ) {
         //
     }
@@ -29,29 +29,29 @@ final class GuzzleMiddleware
      */
     public function __invoke(callable $handler): callable
     {
-        if ($this->laraowl->config['filtering']['ignore_outgoing_requests'] || $this->laraowl->paused()) {
+        if ($this->tyto->config['filtering']['ignore_outgoing_requests'] || $this->tyto->paused()) {
             return $handler;
         }
 
         return function (RequestInterface $request, array $options) use ($handler): PromiseInterface {
             try {
-                $startMicrotime = $this->laraowl->clock->microtime();
+                $startMicrotime = $this->tyto->clock->microtime();
             } catch (Throwable $e) {
-                $this->laraowl->report($e, handled: true);
+                $this->tyto->report($e, handled: true);
 
                 return $handler($request, $options);
             }
 
             return $handler($request, $options)->then(function (ResponseInterface $response) use ($request, $startMicrotime): ResponseInterface {
                 try {
-                    $endMicrotime = $this->laraowl->clock->microtime();
+                    $endMicrotime = $this->tyto->clock->microtime();
 
-                    $this->laraowl->outgoingRequest(
+                    $this->tyto->outgoingRequest(
                         $startMicrotime, $endMicrotime,
                         $request, $response,
                     );
                 } catch (Throwable $e) {
-                    $this->laraowl->report($e, handled: true);
+                    $this->tyto->report($e, handled: true);
                 }
 
                 return $response;

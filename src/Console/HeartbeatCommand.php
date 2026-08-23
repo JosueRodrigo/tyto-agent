@@ -1,9 +1,9 @@
 <?php
 
-namespace Laraowl\Client\Console;
+namespace Tyto\Agent\Console;
 
 use Illuminate\Console\Command;
-use Laraowl\Client\Core;
+use Tyto\Agent\Core;
 
 final class HeartbeatCommand extends Command
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Laraowl\Client\Types;
+namespace Tyto\Agent\Types;
 
 use function max;
 use function min;

@@ -1,16 +1,16 @@
 <?php
 
-namespace Laraowl\Client\Sensors;
+namespace Tyto\Agent\Sensors;
 
 use Illuminate\Database\Events\QueryExecuted;
-use Laraowl\Client\Clock;
-use Laraowl\Client\Compatibility;
-use Laraowl\Client\Location;
-use Laraowl\Client\QueryConnectionType;
-use Laraowl\Client\Records\Query;
-use Laraowl\Client\State\CommandState;
-use Laraowl\Client\State\RequestState;
-use Laraowl\Client\Types\Str;
+use Tyto\Agent\Clock;
+use Tyto\Agent\Compatibility;
+use Tyto\Agent\Location;
+use Tyto\Agent\QueryConnectionType;
+use Tyto\Agent\Records\Query;
+use Tyto\Agent\State\CommandState;
+use Tyto\Agent\State\RequestState;
+use Tyto\Agent\Types\Str;
 
 use function hash;
 use function in_array;

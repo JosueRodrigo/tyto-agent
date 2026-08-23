@@ -1,13 +1,13 @@
 <?php
 
-namespace Laraowl\Client\Hooks;
+namespace Tyto\Agent\Hooks;
 
 use DateTimeImmutable;
 use DateTimeInterface;
 use DateTimeZone;
-use Laraowl\Client\Core;
-use Laraowl\Client\State\CommandState;
-use Laraowl\Client\State\RequestState;
+use Tyto\Agent\Core;
+use Tyto\Agent\State\CommandState;
+use Tyto\Agent\State\RequestState;
 use Monolog\Formatter\FormatterInterface;
 use Monolog\Formatter\NormalizerFormatter;
 use Monolog\LogRecord;
@@ -22,10 +22,10 @@ final class LogRecordProcessor implements ProcessorInterface
     private FormatterInterface $formatter;
 
     /**
-     * @param  Core<RequestState|CommandState>  $laraowl
+     * @param  Core<RequestState|CommandState>  $tyto
      */
     public function __construct(
-        private Core $laraowl,
+        private Core $tyto,
         private string $dateFormat,
     ) {
         //
@@ -46,7 +46,7 @@ final class LogRecordProcessor implements ProcessorInterface
                 extra: $formatted['extra'] ?? [],
             );
         } catch (Throwable $e) {
-            $this->laraowl->report($e, handled: true);
+            $this->tyto->report($e, handled: true);
         }
 
         return $record;

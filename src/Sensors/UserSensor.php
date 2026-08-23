@@ -1,10 +1,10 @@
 <?php
 
-namespace Laraowl\Client\Sensors;
+namespace Tyto\Agent\Sensors;
 
-use Laraowl\Client\Clock;
-use Laraowl\Client\State\RequestState;
-use Laraowl\Client\Types\Str;
+use Tyto\Agent\Clock;
+use Tyto\Agent\State\RequestState;
+use Tyto\Agent\Types\Str;
 
 /**
  * @internal

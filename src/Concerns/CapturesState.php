@@ -1,6 +1,6 @@
 <?php
 
-namespace Laraowl\Client\Concerns;
+namespace Tyto\Agent\Concerns;
 
 use Illuminate\Cache\Events\CacheEvent;
 use Illuminate\Console\Application as Artisan;
@@ -22,15 +22,15 @@ use Illuminate\Queue\Events\JobQueued;
 use Illuminate\Queue\Events\JobQueueing;
 use Illuminate\Queue\Events\JobReleasedAfterException;
 use Illuminate\Routing\Route;
-use Laraowl\Client\Compatibility;
-use Laraowl\Client\Core;
-use Laraowl\Client\ExecutionStage;
-use Laraowl\Client\Facades\LaraowlClient;
-use Laraowl\Client\Hooks\GlobalMiddleware;
-use Laraowl\Client\Hooks\RouteMiddleware;
-use Laraowl\Client\State\CommandState;
-use Laraowl\Client\State\RequestState;
-use Laraowl\Client\Types\Str;
+use Tyto\Agent\Compatibility;
+use Tyto\Agent\Core;
+use Tyto\Agent\ExecutionStage;
+use Tyto\Agent\Facades\TytoAgent;
+use Tyto\Agent\Hooks\GlobalMiddleware;
+use Tyto\Agent\Hooks\RouteMiddleware;
+use Tyto\Agent\State\CommandState;
+use Tyto\Agent\State\RequestState;
+use Tyto\Agent\Types\Str;
 use Monolog\LogRecord;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -183,8 +183,8 @@ trait CapturesState
             'inertia:start-ssr',
             'invoke-serialized-closure',
             'model:prune',
-            'laraowl:agent',
-            'laraowl:status',
+            'tyto:agent',
+            'tyto:status',
             'octane:status',
             'queue:monitor',
             'reverb:start',
@@ -272,7 +272,7 @@ trait CapturesState
                 $this->ingest->write($resolver());
             }
         } catch (Throwable $e) {
-            LaraowlClient::unrecoverableExceptionOccurred($e);
+            TytoAgent::unrecoverableExceptionOccurred($e);
         }
     }
 
@@ -561,13 +561,13 @@ trait CapturesState
         $middleware = $route->middleware();
 
         /**
-         * @see \Laraowl\Client\ExecutionStage::Action
+         * @see \Tyto\Agent\ExecutionStage::Action
          */
         $middleware[] = RouteMiddleware::class;
 
         if (! Compatibility::$terminatingEventExists) {
             /**
-             * @see \Laraowl\Client\ExecutionStage::Terminating
+             * @see \Tyto\Agent\ExecutionStage::Terminating
              */
             array_unshift($middleware, GlobalMiddleware::class);
         }

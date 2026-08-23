@@ -1,13 +1,13 @@
 <?php
 
-namespace Laraowl\Client\Hooks;
+namespace Tyto\Agent\Hooks;
 
 use Illuminate\Console\Events\ScheduledTaskFailed;
 use Illuminate\Console\Events\ScheduledTaskFinished;
 use Illuminate\Console\Events\ScheduledTaskSkipped;
-use Laraowl\Client\Compatibility;
-use Laraowl\Client\Core;
-use Laraowl\Client\State\CommandState;
+use Tyto\Agent\Compatibility;
+use Tyto\Agent\Core;
+use Tyto\Agent\State\CommandState;
 use Throwable;
 
 /**
@@ -16,10 +16,10 @@ use Throwable;
 final class ScheduledTaskListener
 {
     /**
-     * @param  Core<CommandState>  $laraowl
+     * @param  Core<CommandState>  $tyto
      */
     public function __construct(
-        private Core $laraowl,
+        private Core $tyto,
     ) {
         //
     }
@@ -29,7 +29,7 @@ final class ScheduledTaskListener
         // We report the exception here because the scheduler handles it after the task has finished and the data is ingested.
         // This ensures that the exception is captured in the scheduled task record.
         if ($event instanceof ScheduledTaskFailed) {
-            $this->laraowl->report($event->exception);
+            $this->tyto->report($event->exception);
         }
 
         if ($this->isFinishedEventForFailedTask($event)) {
@@ -37,16 +37,16 @@ final class ScheduledTaskListener
         }
 
         if ($event instanceof ScheduledTaskSkipped) {
-            $this->laraowl->prepareForScheduledTask($event->task);
+            $this->tyto->prepareForScheduledTask($event->task);
         }
 
         try {
-            $this->laraowl->scheduledTask($event);
+            $this->tyto->scheduledTask($event);
         } catch (Throwable $e) {
-            $this->laraowl->report($e, handled: true);
+            $this->tyto->report($e, handled: true);
         }
 
-        $this->laraowl->finishExecution()->waitForExecution();
+        $this->tyto->finishExecution()->waitForExecution();
     }
 
     private function isFinishedEventForFailedTask(ScheduledTaskFinished|ScheduledTaskSkipped|ScheduledTaskFailed $event): bool

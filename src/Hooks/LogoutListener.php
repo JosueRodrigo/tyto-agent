@@ -1,10 +1,10 @@
 <?php
 
-namespace Laraowl\Client\Hooks;
+namespace Tyto\Agent\Hooks;
 
 use Illuminate\Auth\Events\Logout;
-use Laraowl\Client\Core;
-use Laraowl\Client\State\RequestState;
+use Tyto\Agent\Core;
+use Tyto\Agent\State\RequestState;
 use Throwable;
 
 /**
@@ -13,10 +13,10 @@ use Throwable;
 final class LogoutListener
 {
     /**
-     * @param  Core<RequestState>  $laraowl
+     * @param  Core<RequestState>  $tyto
      */
     public function __construct(
-        private Core $laraowl,
+        private Core $tyto,
     ) {
         //
     }
@@ -25,10 +25,10 @@ final class LogoutListener
     {
         try {
             if ($event->user !== null) {
-                $this->laraowl->remember($event->user);
+                $this->tyto->remember($event->user);
             }
         } catch (Throwable $e) {
-            $this->laraowl->report($e, handled: true);
+            $this->tyto->report($e, handled: true);
         }
     }
 }

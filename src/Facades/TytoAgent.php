@@ -1,6 +1,6 @@
 <?php
 
-namespace Laraowl\Client\Facades;
+namespace Tyto\Agent\Facades;
 
 use Illuminate\Support\Facades\Facade;
 use Throwable;
@@ -39,9 +39,9 @@ use function call_user_func;
  * @method static void rejectQueries(callable $callback)
  * @method static void rejectQueuedJobs(callable $callback)
  *
- * @see \Laraowl\Client\Core
+ * @see \Tyto\Agent\Core
  */
-final class LaraowlClient extends Facade
+final class TytoAgent extends Facade
 {
     /**
      * @var null|(callable(Throwable): mixed)
@@ -53,7 +53,7 @@ final class LaraowlClient extends Facade
      */
     public static function getFacadeAccessor(): string
     {
-        return \Laraowl\Client\Core::class;
+        return \Tyto\Agent\Core::class;
     }
 
     /**

@@ -1,6 +1,6 @@
 <?php
 
-namespace Laraowl\Client\Tests\Unit;
+namespace Tyto\Agent\Tests\Unit;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ConnectException;
@@ -9,9 +9,9 @@ use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Middleware;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
-use Laraowl\Client\FileSpool;
-use Laraowl\Client\HttpIngest;
-use Laraowl\Client\RecordsBuffer;
+use Tyto\Agent\FileSpool;
+use Tyto\Agent\HttpIngest;
+use Tyto\Agent\RecordsBuffer;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\RequestInterface;
 

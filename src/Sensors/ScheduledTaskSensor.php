@@ -1,6 +1,6 @@
 <?php
 
-namespace Laraowl\Client\Sensors;
+namespace Tyto\Agent\Sensors;
 
 use Closure;
 use DateTimeZone;
@@ -10,11 +10,11 @@ use Illuminate\Console\Events\ScheduledTaskFinished;
 use Illuminate\Console\Events\ScheduledTaskSkipped;
 use Illuminate\Console\Scheduling\CallbackEvent;
 use Illuminate\Console\Scheduling\Event as SchedulingEvent;
-use Laraowl\Client\Clock;
-use Laraowl\Client\Compatibility;
-use Laraowl\Client\Concerns\RecordsContext;
-use Laraowl\Client\State\CommandState;
-use Laraowl\Client\Types\Str;
+use Tyto\Agent\Clock;
+use Tyto\Agent\Compatibility;
+use Tyto\Agent\Concerns\RecordsContext;
+use Tyto\Agent\State\CommandState;
+use Tyto\Agent\Types\Str;
 use ReflectionClass;
 use ReflectionFunction;
 
