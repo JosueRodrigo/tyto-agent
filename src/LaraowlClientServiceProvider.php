@@ -83,7 +83,9 @@ use function array_keys;
 use function array_values;
 use function class_exists;
 use function defined;
+use function max;
 use function microtime;
+use function min;
 
 /**
  * @internal
