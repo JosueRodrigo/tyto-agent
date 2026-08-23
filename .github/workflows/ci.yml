@@ -64,5 +64,10 @@ jobs:
           tools: composer:v2
 
       - run: composer install --prefer-dist --no-interaction --no-progress
-      - run: vendor/bin/pint --test
+      - name: Verify formatting
+        run: |
+          vendor/bin/pint
+          git diff --check
+          git diff
+          git diff --exit-code
       - run: vendor/bin/phpstan --memory-limit=-1
