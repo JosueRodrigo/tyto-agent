@@ -5,6 +5,10 @@ namespace Laraowl\Client\Console;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
 
+use function base_path;
+use function preg_replace;
+use function str_contains;
+
 class InstallCommand extends Command
 {
     protected $signature = 'tyto:install';
