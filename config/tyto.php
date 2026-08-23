@@ -10,6 +10,13 @@ return [
         'server_name' => env('TYTO_SERVER_NAME', config('laraowl.environment.server_name', env('LARAOWL_SERVER_NAME', gethostname()))),
     ],
 
+    'heartbeat' => [
+        'enabled' => env('TYTO_HEARTBEAT_ENABLED', true),
+        'slug' => env('TYTO_HEARTBEAT_SLUG', 'scheduler'),
+        'name' => env('TYTO_HEARTBEAT_NAME', 'Laravel scheduler'),
+        'interval' => (int) env('TYTO_HEARTBEAT_INTERVAL', 1),
+    ],
+
     'privacy' => [
         'capture_source_code' => env('TYTO_CAPTURE_SOURCE_CODE', config('laraowl.privacy.capture_source_code', env('LARAOWL_CAPTURE_SOURCE_CODE', true))),
         'capture_payload' => env('TYTO_CAPTURE_PAYLOAD', config('laraowl.privacy.capture_payload', env('LARAOWL_CAPTURE_PAYLOAD', false))),
