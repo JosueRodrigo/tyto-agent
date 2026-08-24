@@ -35,6 +35,47 @@ TYTO_TOKEN=your-project-token
 
 Telemetry is sent to `/api/v1/ingest` with `X-Tyto-Token`. Every batch carries an idempotency key so the server can reject duplicate delivery safely.
 
+## Application logs
+
+The agent registers a Laravel logging channel named `tyto` automatically. To send application logs to Tyto, the channel must also be part of Laravel's active logging stack.
+
+For Laravel applications whose `config/logging.php` reads `LOG_STACK`, configure:
+
+```dotenv
+LOG_CHANNEL=stack
+LOG_STACK=single,tyto
+```
+
+If the application uses a fixed stack definition, add `tyto` to the `channels` array in `config/logging.php`:
+
+```php
+'stack' => [
+    'driver' => 'stack',
+    'channels' => ['single', 'tyto'],
+    'ignore_exceptions' => false,
+],
+```
+
+The active default channel must be `stack`. Merely defining the `tyto` channel without using it in the active stack does not forward calls such as `Log::info()`.
+
+Clear cached configuration after changing `.env` or `config/logging.php`:
+
+```bash
+php artisan optimize:clear
+```
+
+Verify the effective configuration:
+
+```bash
+php artisan tinker --execute="dump(config('logging.default'), config('logging.channels.stack.channels'), array_key_exists('tyto', config('logging.channels')));"
+```
+
+The expected result is `stack`, an array containing `tyto`, and `true`. Then send a test entry:
+
+```bash
+php artisan tinker --execute="Log::info('Tyto logging integration test', ['source' => 'production']);"
+```
+
 ## Configuration
 
 ```dotenv
