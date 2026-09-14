@@ -37,6 +37,7 @@ return [
         'notifications' => env('TYTO_IGNORE_NOTIFICATIONS', false),
         'queries' => env('TYTO_IGNORE_QUERIES', false),
         'outgoing_requests' => env('TYTO_IGNORE_OUTGOING', false),
+        'not_found' => env('TYTO_IGNORE_404', false),
     ],
 
     'ingest' => [
