@@ -62,6 +62,13 @@ final class GlobalMiddleware
         $this->hasTerminated = true;
 
         try {
+            if ($response->getStatusCode() === Response::HTTP_NOT_FOUND && (bool) config('tyto.ignore.not_found', false)) {
+                $this->tyto->dontSample();
+                $this->tyto->ingest->flush();
+
+                return;
+            }
+
             $this->tyto->stage(ExecutionStage::Terminating);
         } catch (Throwable $e) {
             $this->tyto->report($e, handled: true);
