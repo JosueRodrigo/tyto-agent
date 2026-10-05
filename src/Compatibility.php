@@ -179,6 +179,19 @@ final class Compatibility
         self::addHiddenContext('tyto_user_id', $id);
     }
 
+    public static function clearTytoContext(): void
+    {
+        if (! self::$contextExists) {
+            self::$context = [];
+
+            return;
+        }
+
+        Context::addHidden('tyto_trace_id', null);
+        Context::addHidden('tyto_should_sample', null);
+        Context::addHidden('tyto_user_id', null);
+    }
+
     public static function getUserIdFromContext(): string
     {
         return (string) self::getHiddenContext('tyto_user_id'); // @phpstan-ignore cast.string

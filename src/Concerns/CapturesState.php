@@ -600,6 +600,7 @@ trait CapturesState
     public function prepareForNextJob(): void
     {
         $this->flush();
+        Compatibility::clearTytoContext();
         $this->resume();
         memory_reset_peak_usage();
     }
@@ -619,6 +620,11 @@ trait CapturesState
         );
 
         $this->executionState->timestamp = $this->clock->microtime();
+
+        $trace = (string) Compatibility::getTraceIdFromContext($this->uuid->make());
+        $this->executionState->trace = $trace;
+        Compatibility::addTraceIdToContext($trace);
+
         $this->executionState->setId($this->uuid->make());
         $this->executionState->executionPreview = Str::tinyText($job->resolveName());
 
