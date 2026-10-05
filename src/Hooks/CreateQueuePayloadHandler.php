@@ -3,6 +3,7 @@
 namespace Tyto\Agent\Hooks;
 
 use Throwable;
+use Tyto\Agent\Compatibility;
 use Tyto\Agent\Core;
 use Tyto\Agent\State\CommandState;
 use Tyto\Agent\State\RequestState;
@@ -33,6 +34,9 @@ final class CreateQueuePayloadHandler
                 'tyto' => [
                     ...($payload['tyto'] ?? []),  // @phpstan-ignore arrayUnpacking.nonIterable
                     'job_id' => $this->tyto->uuid->make(),
+                    'tyto_trace_id' => Compatibility::getTraceIdFromContext($this->tyto->executionState->trace),
+                    'tyto_should_sample' => Compatibility::getSamplingFromContext(null),
+                    'tyto_user_id' => $this->tyto->executionState->user->resolvedUserId(),
                 ],
             ];
         } catch (Throwable $e) {
