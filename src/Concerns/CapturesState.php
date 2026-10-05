@@ -600,6 +600,7 @@ trait CapturesState
     public function prepareForNextJob(): void
     {
         $this->flush();
+        Compatibility::clearTytoContext();
         $this->resume();
         memory_reset_peak_usage();
     }
